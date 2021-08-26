@@ -10,7 +10,7 @@ bot = telebot.TeleBot(config.TOKEN)
 #    bot.send_message(message.chat.id, message.text)
 
 
-@bot.message_handler(commands=['help'])
+@bot.message_handler(commands=['start'])
 def start_command(message):
     bot.send_message(message.chat.id,
                      'Приветствую! Я могу показать курс обмена валют.\n' +
