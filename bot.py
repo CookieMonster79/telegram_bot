@@ -57,20 +57,18 @@ def bot_message(message):
 
         elif message.text == '🍩 Узнаем как система':
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-            item1 = types.KeyboardButton('👾 О боте')
             item2 = types.KeyboardButton('📦 Что в коробке?')
             back = types.KeyboardButton('◀ Назад')
-            markup.add(item1, item2, back)
+            markup.add(item2, back)
 
             bot.send_message(message.chat.id, '🍩 Узнаем как система', reply_markup=markup)
 
         elif message.text == '🔱 Другое':
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
             item1 = types.KeyboardButton('Настройки')
-            item2 = types.KeyboardButton('Подписка')
             item3 = types.KeyboardButton('🗿 Стикер')
             back = types.KeyboardButton('◀ Назад')
-            markup.add(item1, item2, item3, back)
+            markup.add(item1, item3, back)
 
             bot.send_message(message.chat.id, '🔱 Другое', reply_markup=markup)
 
