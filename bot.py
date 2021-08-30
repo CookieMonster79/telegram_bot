@@ -7,6 +7,7 @@ import config
 
 bot = telebot.TeleBot(config.TOKEN)
 
+
 ####WEATHER_TOKEN
 
 # Для тестирования
@@ -90,7 +91,8 @@ def bot_message(message):
         elif message.text == '🗿 Стикер':
             check = random.randint(0, 10)
             if check == 0:
-                bot.send_sticker(message.chat.id, 'CAACAgIAAxkBAAEC1MxhLOp1Ts-f8Q3AVILqODevZf_TMwACgwYAAtJaiAFBGhO34v4iBCAE')
+                bot.send_sticker(message.chat.id,
+                                 'CAACAgIAAxkBAAEC1MxhLOp1Ts-f8Q3AVILqODevZf_TMwACgwYAAtJaiAFBGhO34v4iBCAE')
             elif check == 1:
                 bot.send_sticker(message.chat.id,
                                  'CAACAgIAAxkBAAEC1NFhLPLWs4U5iYVxC-47uKej0iWnYgACJoEAAp7OCwABft37e18RdUQgBA')
