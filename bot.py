@@ -7,6 +7,7 @@ import config
 
 bot = telebot.TeleBot(config.TOKEN)
 
+####WEATHER_TOKEN
 
 # Для тестирования
 # @bot.message_handler(content_types=['text'])
@@ -34,7 +35,7 @@ def start_command(message):
 
     bot.send_message(message.chat.id,
                      'Привет!.\n' +
-                     'Умею всякое к примеру давай глянем что у нас там по KS? /exchange.\n',
+                     'Умею всякое.\n',
                      reply_markup=markup
                      )
 
@@ -80,7 +81,6 @@ def bot_message(message):
             item4 = types.KeyboardButton('🔱 Другое')
 
             markup.add(item1, item2, item3, item4)
-            bot.send_sticker(message.chat.id, 'CAACAgIAAxkBAAEC1MRhLOV2h34WtU_oXoQTZuUz2gIzSwACEgADPaRVGWRqgg9i5-QnIAQ')
 
             bot.send_message(message.chat.id,
                              '◀ Назад',
@@ -88,7 +88,39 @@ def bot_message(message):
                              )
 
         elif message.text == '🗿 Стикер':
-            bot.send_sticker(message.chat.id, 'CAACAgIAAxkBAAEC1MxhLOp1Ts-f8Q3AVILqODevZf_TMwACgwYAAtJaiAFBGhO34v4iBCAE')
+            check = random.randint(0, 10)
+            if check == 0:
+                bot.send_sticker(message.chat.id, 'CAACAgIAAxkBAAEC1MxhLOp1Ts-f8Q3AVILqODevZf_TMwACgwYAAtJaiAFBGhO34v4iBCAE')
+            elif check == 1:
+                bot.send_sticker(message.chat.id,
+                                 'CAACAgIAAxkBAAEC1NFhLPLWs4U5iYVxC-47uKej0iWnYgACJoEAAp7OCwABft37e18RdUQgBA')
+            elif check == 2:
+                bot.send_sticker(message.chat.id,
+                                 'CAACAgIAAxkBAAEC1NNhLPLlGucRbNjwJerrAq_ga4RKDgACP4EAAp7OCwABat5BLJOatCEgBA')
+            elif check == 3:
+                bot.send_sticker(message.chat.id,
+                                 'CAACAgIAAxkBAAEC1NVhLPLyk1nwyfbAzEv05BU5maeZvAACQwADpm6pHZcs4TRf5iaYIAQ')
+            elif check == 4:
+                bot.send_sticker(message.chat.id,
+                                 'CAACAgIAAxkBAAEC1NlhLPL-KdUBui6RonmVWFGHesEFIwACXQADpm6pHUOQkUhEvjF7IAQ')
+            elif check == 5:
+                bot.send_sticker(message.chat.id,
+                                 'CAACAgIAAxkBAAEC1NthLPMKRdKkG3EXgsP2xhQtX4hRHwACzwkAAgi3GQLdwOHA1H1MIiAE')
+            elif check == 6:
+                bot.send_sticker(message.chat.id,
+                                 'CAACAgIAAxkBAAEC1N1hLPMXiQ7WTpKQEEDCTM6TQHC6zAACCgADPaRVGT4ahXGzmh7aIAQ')
+            elif check == 7:
+                bot.send_sticker(message.chat.id,
+                                 'CAACAgIAAxkBAAEC1N9hLPMjQmmMevHFmXDmLeCcZqmUOwAC5AcAApb6EgUSPp93kc5MGSAE')
+            elif check == 8:
+                bot.send_sticker(message.chat.id,
+                                 'CAACAgIAAxkBAAEC1OFhLPMsOA2G78uk-qZn1ww_y-MhEAAC7gcAApb6EgUV_ytCQwThRiAE')
+            elif check == 9:
+                bot.send_sticker(message.chat.id,
+                                 'CAACAgIAAxkBAAEC1ONhLPM2PXxQ-xzRdQo_bcD6Njo98QACFwADiwTqG-wbcBkhqTt9IAQ')
+            elif check == 10:
+                bot.send_sticker(message.chat.id,
+                                 'CAACAgIAAxkBAAEC1OVhLPNAMfr9N1aPGXfxopPr0OxOngACJwADGELuCMj8_JJUedksIAQ')
 
 
 bot.polling(none_stop=True)
