@@ -1,14 +1,14 @@
 import random
 
+import requests
 import telebot
 from telebot import types
 
 import config
+from config import WEATHER_TOKEN
 
 bot = telebot.TeleBot(config.TOKEN)
 
-
-####WEATHER_TOKEN
 
 # Для тестирования
 # @bot.message_handler(content_types=['text'])
@@ -27,7 +27,7 @@ bot = telebot.TeleBot(config.TOKEN)
 def start_command(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton('🎇 Рандомное число')
-    item2 = types.KeyboardButton('🎽 Узнаем курсы')
+    item2 = types.KeyboardButton('🔮 Узнаем погоду')
     item3 = types.KeyboardButton('🍩 Узнаем как система')
     item4 = types.KeyboardButton('🔱 Другое')
 
@@ -46,14 +46,14 @@ def bot_message(message):
     if message.chat.type == 'private':
         if message.text == '🎇 Рандомное число':
             bot.send_message(message.chat.id, 'Ваше число: ' + str(random.randint(0, 100)))
-        elif message.text == '🎽 Узнаем курсы':
+        elif message.text == '🔮 Узнаем погоду':
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-            item1 = types.KeyboardButton('🎇 Курс Евро')
-            item2 = types.KeyboardButton('🎽 Курс Доллара')
+            item1 = types.KeyboardButton('🏤 Москва')
+            item2 = types.KeyboardButton('🚣 Санкт-Петербург')
             back = types.KeyboardButton('◀ Назад')
             markup.add(item1, item2, back)
 
-            bot.send_message(message.chat.id, '🎽 Узнаем курсы', reply_markup=markup)
+            bot.send_message(message.chat.id, '🔮 Узнаем погоду', reply_markup=markup)
 
         elif message.text == '🍩 Узнаем как система':
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -77,7 +77,7 @@ def bot_message(message):
         elif message.text == '◀ Назад':
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
             item1 = types.KeyboardButton('🎇 Рандомное число')
-            item2 = types.KeyboardButton('🎽 Узнаем курсы')
+            item2 = types.KeyboardButton('🔮 Узнаем погоду')
             item3 = types.KeyboardButton('🍩 Узнаем как система')
             item4 = types.KeyboardButton('🔱 Другое')
 
@@ -123,6 +123,46 @@ def bot_message(message):
             elif check == 10:
                 bot.send_sticker(message.chat.id,
                                  'CAACAgIAAxkBAAEC1OVhLPNAMfr9N1aPGXfxopPr0OxOngACJwADGELuCMj8_JJUedksIAQ')
+
+        elif message.text == '🏤 Москва':
+            try:
+                r = requests.get(
+                    f"http://api.openweathermap.org/data/2.5/weather?q=moscow&appid={WEATHER_TOKEN}&units=metric"
+                )
+                data = r.json()
+
+                cur_weat = data["main"]["temp"]
+                humidity = data["main"]["humidity"]
+                pressure = data["main"]["pressure"]
+                wind = data["wind"]["speed"]
+
+                bot.send_message(message.chat.id,
+                                 f"Температура: {cur_weat}C°\nВлажность: {humidity}%\n"
+                                 f"Давление: {pressure} мм.рт.ст.\nВетер: {wind} м/сек\n")
+
+
+            except:
+                bot.send_message('Что-то пошло не по плану :(')
+
+        elif message.text == '🚣 Санкт-Петербург':
+            try:
+                r = requests.get(
+                    f"http://api.openweathermap.org/data/2.5/weather?q=Saint%20Petersburg&appid={WEATHER_TOKEN}&units=metric"
+                )
+                data = r.json()
+
+                cur_weat = data["main"]["temp"]
+                humidity = data["main"]["humidity"]
+                pressure = data["main"]["pressure"]
+                wind = data["wind"]["speed"]
+
+                bot.send_message(message.chat.id,
+                                 f"Температура: {cur_weat}C°\nВлажность: {humidity}%\n"
+                                 f"Давление: {pressure} мм.рт.ст.\nВетер: {wind} м/сек\n")
+
+
+            except:
+                bot.send_message('Что-то пошло не по плану :(')
 
 
 bot.polling(none_stop=True)
