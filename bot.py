@@ -45,7 +45,7 @@ def start_command(message):
 def bot_message(message):
     if message.chat.type == 'private':
         if message.text == '🎇 Рандомное число':
-            bot.send_message(message.chat.id, 'Ваше число: ' + str(random.randint(0, 1000)))
+            bot.send_message(message.chat.id, 'Ваше число: ' + str(random.randint(0, 100)))
     elif message.text == '🎽 Кнопка 1':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         item1 = types.KeyboardButton('🎇 Курс Евро')
