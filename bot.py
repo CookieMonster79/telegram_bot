@@ -30,8 +30,7 @@ def start_command(message):
     item4 = types.KeyboardButton('🍟 Кнопка 3')
 
     markup.add(item1, item2, item3, item4)
-    #    sti = open('static/start.webp', 'rb')
-    #    bot.send_sticker(message.chat.id, sti)
+    bot.send_sticker(message.chat.id, "![](static/start.webp)")
 
     bot.send_message(message.chat.id,
                      'Привет!.\n' +
