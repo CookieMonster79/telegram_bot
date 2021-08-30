@@ -63,6 +63,9 @@ def bot_message(message):
 
             bot.send_message(message.chat.id, '🍩 Узнаем как система', reply_markup=markup)
 
+        elif message.text == '📦 Что в коробке?':
+            bot.send_message(message.chat.id, 'По секрету скажу что пока ничего интересного нету, но это пока)')
+
         elif message.text == '🔱 Другое':
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
             item1 = types.KeyboardButton('Настройки')
