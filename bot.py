@@ -10,17 +10,10 @@ from config import WEATHER_TOKEN
 bot = telebot.TeleBot(config.TOKEN)
 
 
-# Для тестирования
+# Для тестирования - эхо функция
 # @bot.message_handler(content_types=['text'])
 # def lalala(message):
 #    bot.send_message(message.chat.id, message.text)
-
-
-# start - общая информация
-# ks - перейти к просмотру ks
-#
-#
-#
 
 
 @bot.message_handler(commands=['start'])
@@ -169,7 +162,7 @@ def bot_message(message):
                 except:
                     bot.send_message('Что-то пошло не по плану :(')
     else:
-        bot.send_message(message.chat.id, 'Извини я тебя не знаю(')
+        bot.send_message(message.chat.id, message.text)
 
 
 bot.polling(none_stop=True)
