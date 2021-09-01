@@ -35,7 +35,7 @@ def start_command(message):
 
 
 # Список идентификаторов пользователей кому доступен бот
-list_user = ['moskva_max', 'Sasha6Popova1']
+list_user = ['moskva_max', 'Sasha6Popova']
 
 
 # Функция для отсечения символов после запятой
