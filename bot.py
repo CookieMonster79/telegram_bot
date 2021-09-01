@@ -86,6 +86,12 @@ def bot_message(message):
                     bot.send_message('Что-то пошло не по плану :(')
 
             elif message.text == '📦 Количество заявок сегодня':
+                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+                item1 = types.KeyboardButton('🧑‍💻 По командам')
+                item3 = types.KeyboardButton('📚 По клиентам')
+                back = types.KeyboardButton('◀ Назад')
+                markup.add(item1, item3, back)
+
                 try:
                     url = f"{PATH}sd/services/rest/exec?accessKey={ACCESSKEY}"
 
