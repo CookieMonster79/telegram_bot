@@ -33,8 +33,13 @@ def start_command(message):
                      reply_markup=markup
                      )
 
-#Список идентификаторов пользователей кому доступен бот
+
+# Список идентификаторов пользователей кому доступен бот
 list_user = ['moskva_max', 'Sasha6Popova']
+
+
+def toFixed(numObj, digits=0):
+    return f"{numObj:.{digits}f}"
 
 
 @bot.message_handler(content_types=['text'])
@@ -54,11 +59,25 @@ def bot_message(message):
 
             elif message.text == '🍩 Узнаем как система':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+                item1 = types.KeyboardButton('🍀 Статус системы')
                 item2 = types.KeyboardButton('📦 Что в коробке?')
                 back = types.KeyboardButton('◀ Назад')
-                markup.add(item2, back)
+                markup.add(item1, item2, back)
 
                 bot.send_message(message.chat.id, '🍩 Узнаем как система', reply_markup=markup)
+
+            elif message.text == '🍀 Статус системы':
+                try:
+                    r = requests.get(f"https://keystone.itsm365.com/sd/services/rest/check-status")
+                    data = r.text
+                    time = toFixed(r.elapsed.total_seconds(), 2)
+
+                    bot.send_message(message.chat.id,
+                                     f"Ответ сервера: {data}\n" +
+                                     f"Время запроса: {time} сек")
+
+                except:
+                    bot.send_message('Что-то пошло не по плану :(')
 
             elif message.text == '📦 Что в коробке?':
                 bot.send_message(message.chat.id, 'По секрету скажу что пока ничего интересного нету, но это пока)')
