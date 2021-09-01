@@ -5,7 +5,7 @@ import telebot
 from telebot import types
 
 import config
-from config import WEATHER_TOKEN
+from config import WEATHER_TOKEN, PATH, ACCESSKEY
 
 bot = telebot.TeleBot(config.TOKEN)
 
@@ -38,6 +38,8 @@ def start_command(message):
 list_user = ['moskva_max', 'Sasha6Popova']
 
 
+# Функция для отсечения символов после запятой
+
 def toFixed(numObj, digits=0):
     return f"{numObj:.{digits}f}"
 
@@ -60,15 +62,19 @@ def bot_message(message):
             elif message.text == '🍩 Узнаем как система':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
                 item1 = types.KeyboardButton('🍀 Статус системы')
-                item2 = types.KeyboardButton('📦 Что в коробке?')
+                item2 = types.KeyboardButton('📦 Количество заявок сегодня')
+                item3 = types.KeyboardButton('📦 Ещё одно 1')
+                item4 = types.KeyboardButton('📦 Ещё одно 2')
+                item5 = types.KeyboardButton('📦 Ещё одно 3')
+                item6 = types.KeyboardButton('📦 Ещё одно 4')
                 back = types.KeyboardButton('◀ Назад')
-                markup.add(item1, item2, back)
+                markup.add(item1, item2, item3, item4, item5, item6, back)
 
                 bot.send_message(message.chat.id, '🍩 Узнаем как система', reply_markup=markup)
 
             elif message.text == '🍀 Статус системы':
                 try:
-                    r = requests.get(f"https://keystone.itsm365.com/sd/services/rest/check-status")
+                    r = requests.get(f"{PATH}sd/services/rest/check-status")
                     data = r.text
                     time = toFixed(r.elapsed.total_seconds(), 2)
 
@@ -79,8 +85,29 @@ def bot_message(message):
                 except:
                     bot.send_message('Что-то пошло не по плану :(')
 
-            elif message.text == '📦 Что в коробке?':
-                bot.send_message(message.chat.id, 'По секрету скажу что пока ничего интересного нету, но это пока)')
+            elif message.text == '📦 Количество заявок сегодня':
+                try:
+                    url = f"{PATH}sd/services/rest/exec?accessKey={ACCESSKEY}"
+
+                    payload = {}
+                    files = [
+                        ('script', ('countCall.groovy', open('Groovy Script/countCall.groovy', 'rb'),
+                                    'application/octet-stream'))
+                    ]
+                    headers = {
+                        'Authorization': 'Basic UnVkb21hbkRTQE1PUy5QT0xVUy5HTEQ6MTIz',
+                        'Cookie': 'JSESSIONID=F6142A7BA1F133CF7C2AFC77DB5D8BA6'
+                    }
+
+                    response = requests.request("POST", url, headers=headers, data=payload, files=files)
+
+                    data = response.text
+
+                    bot.send_message(message.chat.id,
+                                     f"{data} заявки")
+
+                except:
+                    bot.send_message('Что-то пошло не по плану :(')
 
             elif message.text == '🔱 Другое':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
