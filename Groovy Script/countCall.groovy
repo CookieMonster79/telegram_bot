@@ -1,3 +1,6 @@
 use(groovy.time.TimeCategory) {
-    return utils.find('serviceCall',['removed':false,'creationDate': op.between(new Date()-1.day, new Date())]).size()
+  	def str1 = (new Date()-1.day).format('dd-MM-yyyy')
+    def str2 =  new Date().format('dd-MM-yyyy')
+
+  return utils.count('serviceCall',['creationDate' : op.between(new Date().parse('dd-MM-yyyy', str1), new Date().parse('dd-MM-yyyy', str2))])
 }
