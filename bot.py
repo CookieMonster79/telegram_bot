@@ -21,7 +21,7 @@ def start_command(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton('🎇 Рандомное число')
     item2 = types.KeyboardButton('🔮 Узнаем погоду')
-    item3 = types.KeyboardButton('🍩 Узнаем как система')
+    item3 = types.KeyboardButton('🍩 ITSM365')
     item4 = types.KeyboardButton('🔱 Другое')
 
     markup.add(item1, item2, item3, item4)
@@ -59,18 +59,18 @@ def bot_message(message):
 
                 bot.send_message(message.chat.id, '🔮 Узнаем погоду', reply_markup=markup)
 
-            elif message.text == '🍩 Узнаем как система':
+            elif message.text == '🍩 ITSM365':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
                 item1 = types.KeyboardButton('🍀 Статус системы')
                 item2 = types.KeyboardButton('📦 Количество заявок сегодня')
-                item3 = types.KeyboardButton('📦 Ещё одно 1')
+                item3 = types.KeyboardButton('📦 Статистика по клиентам')
                 item4 = types.KeyboardButton('📦 Ещё одно 2')
                 item5 = types.KeyboardButton('📦 Ещё одно 3')
                 item6 = types.KeyboardButton('📦 Ещё одно 4')
                 back = types.KeyboardButton('◀ Назад')
                 markup.add(item1, item2, item3, item4, item5, item6, back)
 
-                bot.send_message(message.chat.id, '🍩 Узнаем как система', reply_markup=markup)
+                bot.send_message(message.chat.id, '🍩 ITSM365', reply_markup=markup)
 
             elif message.text == '🍀 Статус системы':
                 try:
@@ -105,7 +105,29 @@ def bot_message(message):
 
                     bot.send_message(message.chat.id,
                                      f"{data} заявки")
+                except:
+                    bot.send_message('Что-то пошло не по плану :(')
 
+            elif message.text == '📦 Статистика по клиентам':
+                try:
+                    url = f"{PATH}sd/services/rest/exec?accessKey={ACCESSKEY}"
+
+                    payload = {}
+                    files = [
+                        ('script', ('countCall.groovy', open('Groovy Script/tableStatisticForClient.groovy', 'rb'),
+                                    'application/octet-stream'))
+                    ]
+                    headers = {
+                        'Authorization': 'Basic UnVkb21hbkRTQE1PUy5QT0xVUy5HTEQ6MTIz',
+                        'Cookie': 'JSESSIONID=F6142A7BA1F133CF7C2AFC77DB5D8BA6'
+                    }
+
+                    response = requests.request("POST", url, headers=headers, data=payload, files=files)
+
+                    data = response.text
+
+                    bot.send_message(message.chat.id,
+                                     f"{data}")
                 except:
                     bot.send_message('Что-то пошло не по плану :(')
 
@@ -122,7 +144,7 @@ def bot_message(message):
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
                 item1 = types.KeyboardButton('🎇 Рандомное число')
                 item2 = types.KeyboardButton('🔮 Узнаем погоду')
-                item3 = types.KeyboardButton('🍩 Узнаем как система')
+                item3 = types.KeyboardButton('🍩 ITSM365')
                 item4 = types.KeyboardButton('🔱 Другое')
 
                 markup.add(item1, item2, item3, item4)
