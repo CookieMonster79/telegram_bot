@@ -1,4 +1,6 @@
+import json
 import random
+from tabulate import tabulate
 
 import requests
 import telebot
@@ -126,8 +128,34 @@ def bot_message(message):
 
                     data = response.text
 
+                    data = data.replace("]", "")
+                    data = data.replace("[", "")
+                    data = data.replace(" ", "")
+                    result = data.split(",")
+
+                    def split_list(alist, wanted_parts=1):
+                        length = len(alist)
+                        return [alist[i * length // wanted_parts: (i + 1) * length // wanted_parts]
+                                for i in range(wanted_parts)]
+
+                    lists = split_list(result, wanted_parts=9)
+                    lenght = len(lists)
+
+                    table = {}
+
+                    for i in range(lenght):
+                        pool = lists[i]
+                        table[i] = pool
+
+                    headers = ["Название", "Заявки", "Сотрудники", "Регл. работы"]
+
+                    text_mess = tabulate(
+                        [table[0], table[1], table[2], table[3], table[4], table[5], table[6], table[7], table[8]],
+                        headers)
+
+
                     bot.send_message(message.chat.id,
-                                     f"{data}")
+                                     f"<pre>{text_mess}</pre>", parse_mode="HTML")
                 except:
                     bot.send_message('Что-то пошло не по плану :(')
 
