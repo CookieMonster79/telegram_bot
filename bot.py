@@ -1,8 +1,8 @@
 import random
-from tabulate import tabulate
 
 import requests
 import telebot
+from tabulate import tabulate
 from telebot import types
 
 import config
@@ -151,7 +151,6 @@ def bot_message(message):
                     text_mess = tabulate(
                         [table[0], table[1], table[2], table[3], table[4], table[5], table[6], table[7], table[8]],
                         headers)
-
 
                     bot.send_message(message.chat.id,
                                      f"<pre>{text_mess}</pre>", parse_mode="HTML")
