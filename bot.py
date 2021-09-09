@@ -63,7 +63,7 @@ def bot_message(message):
             elif message.text == '🍩 ITSM365':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
                 item1 = types.KeyboardButton('🍀 Статус системы')
-                item2 = types.KeyboardButton('📦 Кол. заявок сегодня')
+                item2 = types.KeyboardButton('📦 Заявок сегодня')
                 item3 = types.KeyboardButton('📦 Стат. по клиентам')
                 item4 = types.KeyboardButton('📦 Войти под ...')
                 item5 = types.KeyboardButton('📦 Ещё одно 3')
@@ -86,7 +86,7 @@ def bot_message(message):
                 except:
                     bot.send_message('Что-то пошло не по плану :(')
 
-            elif message.text == '📦 Количество заявок сегодня':
+            elif message.text == '📦 Заявок сегодня':
                 try:
                     url = f"{PATH}sd/services/rest/exec?accessKey={ACCESSKEY}"
 
@@ -105,11 +105,11 @@ def bot_message(message):
                     data = response.text
 
                     bot.send_message(message.chat.id,
-                                     f"{data} заявки")
+                                     f"{data}")
                 except:
                     bot.send_message('Что-то пошло не по плану :(')
 
-            elif message.text == '📦 Статистика по клиентам':
+            elif message.text == '📦 Стат. по клиентам':
                 try:
                     url = f"{PATH}sd/services/rest/exec?accessKey={ACCESSKEY}"
 
@@ -157,14 +157,52 @@ def bot_message(message):
                 except:
                     bot.send_message('Что-то пошло не по плану :(')
 
-            elif message.text == '📦 Войти под...':
+            elif message.text == '📦 Войти под ...':
                 try:
+                    markup = types.ForceReply(selective=False)
+                    bot.send_message(message.chat.id, f"Введите Фамилию, типа Иванов", reply_markup=markup)
 
-                    bot.send_message(message.chat.id,
-                                     f"Пока нет")
+                    @bot.message_handler(content_types=['text'])
+                    def message_input_step(message_user):
+                        global user_text
+                        user_text = message_user.text
+
+                        if user_text != '':
+                            with open('Groovy Script/loginForEmpl.groovy', 'r', encoding="utf-8") as f:
+                                old_data = f.read()
+
+                            new_data = old_data.replace('Иванов', user_text)
+
+                            with open('Groovy Script/loginForEmpl.groovy', 'w', encoding="utf-8") as f:
+                                f.write(new_data)
+
+                            url = f"{PATH}sd/services/rest/exec?accessKey={ACCESSKEY}"
+
+                            payload = {}
+                            files = [
+                                ('script', ('loginForEmpl.groovy', open('Groovy Script/loginForEmpl.groovy', 'rb'),
+                                            'application/octet-stream'))
+                            ]
+                            headers = {
+                                'Authorization': 'Basic UnVkb21hbkRTQE1PUy5QT0xVUy5HTEQ6MTIz',
+                                'Cookie': 'JSESSIONID=F6142A7BA1F133CF7C2AFC77DB5D8BA6'
+                            }
+
+                            response = requests.request("POST", url, headers=headers, data=payload, files=files)
+
+                            data = response.text
+
+                            bot.send_message(message.chat.id, text=data, parse_mode="HTML")
+
+                            new_data2 = new_data.replace(user_text, 'Иванов')
+                            with open('Groovy Script/loginForEmpl.groovy', 'w', encoding="utf-8") as f:
+                                f.write(new_data2)
+
+                    bot.register_next_step_handler(message,
+                                                   message_input_step)  # добавляем следующий шаг, перенаправляющий пользователя на message_input_step
 
                 except:
-                    bot.send_message('Что-то пошло не по плану :(')
+                    bot.send_message(message.chat.id, 'Что-то пошло не по плану :(')
 
 
 
