@@ -1,5 +1,5 @@
-def mess = "Иванов"
-def mass = loginForEmpl(mess)
+def mass = loginForEmpl("Иванов")
+
 def loginForEmpl(names){
     keys=""
     names=[names + '%']
