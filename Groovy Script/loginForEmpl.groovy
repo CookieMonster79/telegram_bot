@@ -9,7 +9,7 @@ def loginForEmpl(names){
       listNames = listNames + usr
         listNames.each{
           if(usr){
-            keys+="${api.web.asLink(api.web.open(it, api.auth.getAccessKey(it.login).setDisposable().setDeadlineDays(5)), it.title)} <pre>\n</pre>"
+            keys+="${api.web.asLink(api.web.open(it, api.auth.getAccessKey(it.login).setReusable().setDeadlineHours(1)), it.title)} <pre>\n</pre>"
           } else{
             keys = null
             }
