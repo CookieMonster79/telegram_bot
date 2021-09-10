@@ -192,7 +192,17 @@ def bot_message(message):
 
                             data = response.text
 
-                            bot.send_message(message.chat.id, text=data, parse_mode="HTML")
+                            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+                            item1 = types.KeyboardButton('🍀 Статус системы')
+                            item2 = types.KeyboardButton('📦 Заявок сегодня')
+                            item3 = types.KeyboardButton('📦 Стат. по клиентам')
+                            item4 = types.KeyboardButton('📦 Войти под ...')
+                            item5 = types.KeyboardButton('📦 Ещё одно 3')
+                            item6 = types.KeyboardButton('📦 Ещё одно 4')
+                            back = types.KeyboardButton('◀ Назад')
+                            markup.add(item1, item2, item3, item4, item5, item6, back)
+
+                            bot.send_message(message.chat.id, text=data, parse_mode="HTML", reply_markup=markup)
 
                             new_data2 = new_data.replace(user_text, 'Иванов')
                             with open('Groovy Script/loginForEmpl.groovy', 'w', encoding="utf-8") as f:
@@ -200,7 +210,6 @@ def bot_message(message):
 
                     bot.register_next_step_handler(message,
                                                    message_input_step)  # добавляем следующий шаг, перенаправляющий пользователя на message_input_step
-
                 except:
                     bot.send_message(message.chat.id, 'Что-то пошло не по плану :(')
 
