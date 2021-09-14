@@ -1,12 +1,12 @@
 import random
 
+import psycopg2
 import requests
 import telebot
 from tabulate import tabulate
 from telebot import types
 
 import config
-from config import WEATHER_TOKEN, PATH, ACCESSKEY
 
 bot = telebot.TeleBot(config.TOKEN)
 
@@ -40,7 +40,6 @@ list_user = ['moskva_max', 'Sasha6Popova']
 
 
 # Функция для отсечения символов после запятой
-
 def toFixed(numObj, digits=0):
     return f"{numObj:.{digits}f}"
 
@@ -75,7 +74,7 @@ def bot_message(message):
 
             elif message.text == '🍀 Статус системы':
                 try:
-                    r = requests.get(f"{PATH}sd/services/rest/check-status")
+                    r = requests.get(f"{config.PATH}sd/services/rest/check-status")
                     data = r.text
                     time = toFixed(r.elapsed.total_seconds(), 2)
 
@@ -84,11 +83,11 @@ def bot_message(message):
                                      f"Время запроса: {time} сек")
 
                 except:
-                    bot.send_message('Что-то пошло не по плану :(')
+                    bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
             elif message.text == '📦 Заявок сегодня':
                 try:
-                    url = f"{PATH}sd/services/rest/exec?accessKey={ACCESSKEY}"
+                    url = f"{config.PATH}sd/services/rest/exec?accessKey={config.ACCESSKEY}"
 
                     payload = {}
                     files = [
@@ -107,11 +106,11 @@ def bot_message(message):
                     bot.send_message(message.chat.id,
                                      f"{data}")
                 except:
-                    bot.send_message('Что-то пошло не по плану :(')
+                    bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
             elif message.text == '📦 Стат. по клиентам':
                 try:
-                    url = f"{PATH}sd/services/rest/exec?accessKey={ACCESSKEY}"
+                    url = f"{config.PATH}sd/services/rest/exec?accessKey={config.ACCESSKEY}"
 
                     payload = {}
                     files = [
@@ -155,7 +154,7 @@ def bot_message(message):
                     bot.send_message(message.chat.id,
                                      f"<pre>{text_mess}</pre>", parse_mode="HTML")
                 except:
-                    bot.send_message('Что-то пошло не по плану :(')
+                    bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
             elif message.text == '📦 Войти под ...':
                 try:
@@ -176,7 +175,7 @@ def bot_message(message):
                             with open('Groovy Script/loginForEmpl.groovy', 'w', encoding="utf-8") as f:
                                 f.write(new_data)
 
-                            url = f"{PATH}sd/services/rest/exec?accessKey={ACCESSKEY}"
+                            url = f"{config.PATH}sd/services/rest/exec?accessKey={config.ACCESSKEY}"
 
                             payload = {}
                             files = [
@@ -213,8 +212,6 @@ def bot_message(message):
                 except:
                     bot.send_message(message.chat.id, 'Что-то пошло не по плану :(')
 
-
-
             elif message.text == '🔱 Другое':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
                 item1 = types.KeyboardButton('Настройки')
@@ -239,45 +236,35 @@ def bot_message(message):
                                  )
 
             elif message.text == '🗿 Стикер':
-                check = random.randint(0, 10)
-                if check == 0:
-                    bot.send_sticker(message.chat.id,
-                                     'CAACAgIAAxkBAAEC1MxhLOp1Ts-f8Q3AVILqODevZf_TMwACgwYAAtJaiAFBGhO34v4iBCAE')
-                elif check == 1:
-                    bot.send_sticker(message.chat.id,
-                                     'CAACAgIAAxkBAAEC1NFhLPLWs4U5iYVxC-47uKej0iWnYgACJoEAAp7OCwABft37e18RdUQgBA')
-                elif check == 2:
-                    bot.send_sticker(message.chat.id,
-                                     'CAACAgIAAxkBAAEC1NNhLPLlGucRbNjwJerrAq_ga4RKDgACP4EAAp7OCwABat5BLJOatCEgBA')
-                elif check == 3:
-                    bot.send_sticker(message.chat.id,
-                                     'CAACAgIAAxkBAAEC1NVhLPLyk1nwyfbAzEv05BU5maeZvAACQwADpm6pHZcs4TRf5iaYIAQ')
-                elif check == 4:
-                    bot.send_sticker(message.chat.id,
-                                     'CAACAgIAAxkBAAEC1NlhLPL-KdUBui6RonmVWFGHesEFIwACXQADpm6pHUOQkUhEvjF7IAQ')
-                elif check == 5:
-                    bot.send_sticker(message.chat.id,
-                                     'CAACAgIAAxkBAAEC1NthLPMKRdKkG3EXgsP2xhQtX4hRHwACzwkAAgi3GQLdwOHA1H1MIiAE')
-                elif check == 6:
-                    bot.send_sticker(message.chat.id,
-                                     'CAACAgIAAxkBAAEC1N1hLPMXiQ7WTpKQEEDCTM6TQHC6zAACCgADPaRVGT4ahXGzmh7aIAQ')
-                elif check == 7:
-                    bot.send_sticker(message.chat.id,
-                                     'CAACAgIAAxkBAAEC1N9hLPMjQmmMevHFmXDmLeCcZqmUOwAC5AcAApb6EgUSPp93kc5MGSAE')
-                elif check == 8:
-                    bot.send_sticker(message.chat.id,
-                                     'CAACAgIAAxkBAAEC1OFhLPMsOA2G78uk-qZn1ww_y-MhEAAC7gcAApb6EgUV_ytCQwThRiAE')
-                elif check == 9:
-                    bot.send_sticker(message.chat.id,
-                                     'CAACAgIAAxkBAAEC1ONhLPM2PXxQ-xzRdQo_bcD6Njo98QACFwADiwTqG-wbcBkhqTt9IAQ')
-                elif check == 10:
-                    bot.send_sticker(message.chat.id,
-                                     'CAACAgIAAxkBAAEC1OVhLPNAMfr9N1aPGXfxopPr0OxOngACJwADGELuCMj8_JJUedksIAQ')
+                try:
+                    i = random.randint(1, 100)
+
+                    con = psycopg2.connect(
+                        database=config.PG_DATABASE,
+                        user=config.PG_USER,
+                        password=config.PG_PASSWORD,
+                        host=config.PG_HOST,
+                        port=config.PG_PORT
+                    )
+
+                    cur = con.cursor()
+
+                    cur.execute('SELECT * FROM public."Stickers" WHERE id = ' + str(i))
+
+                    rows = cur.fetchall()
+
+                    for row in rows:
+                        bot.send_sticker(message.chat.id, row[1])
+
+                    con.close()
+
+                except:
+                    bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
             elif message.text == '🏤 Москва':
                 try:
                     r = requests.get(
-                        f"http://api.openweathermap.org/data/2.5/weather?q=moscow&appid={WEATHER_TOKEN}&units=metric"
+                        f"http://api.openweathermap.org/data/2.5/weather?q=moscow&appid={config.WEATHER_TOKEN}&units=metric"
                     )
                     data = r.json()
 
@@ -292,12 +279,12 @@ def bot_message(message):
 
 
                 except:
-                    bot.send_message('Что-то пошло не по плану :(')
+                    bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
             elif message.text == '🚣 Санкт-Петербург':
                 try:
                     r = requests.get(
-                        f"http://api.openweathermap.org/data/2.5/weather?q=Saint%20Petersburg&appid={WEATHER_TOKEN}&units=metric"
+                        f"http://api.openweathermap.org/data/2.5/weather?q=Saint%20Petersburg&appid={config.WEATHER_TOKEN}&units=metric"
                     )
                     data = r.json()
 
@@ -312,7 +299,7 @@ def bot_message(message):
 
 
                 except:
-                    bot.send_message('Что-то пошло не по плану :(')
+                    bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
     else:
         bot.send_message(message.chat.id, message.text)
 
