@@ -10,15 +10,17 @@ import config
 
 bot = telebot.TeleBot(config.TOKEN)
 
-
-# Для тестирования - эхо функция
-# @bot.message_handler(content_types=['text'])
-# def lalala(message):
-#    bot.send_message(message.chat.id, message.text)
+# Список идентификаторов пользователей кому доступен бот
+list_user = ['moskva_max', 'Sasha6Popova']
 
 
 @bot.message_handler(commands=['start'])
 def start_command(message):
+    """
+    Начало работы бота
+    :param message: сообщение из чата с пользователем
+    :return: Возврат Сообщение с пользовательской клавиатурой
+    """
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton('🎇 Рандомное число')
     item2 = types.KeyboardButton('🔮 Узнаем погоду')
@@ -26,7 +28,6 @@ def start_command(message):
     item4 = types.KeyboardButton('🔱 Другое')
 
     markup.add(item1, item2, item3, item4)
-    bot.send_sticker(message.chat.id, 'CAACAgIAAxkBAAEC1MRhLOV2h34WtU_oXoQTZuUz2gIzSwACEgADPaRVGWRqgg9i5-QnIAQ')
 
     bot.send_message(message.chat.id,
                      'Привет!.\n' +
@@ -35,12 +36,13 @@ def start_command(message):
                      )
 
 
-# Список идентификаторов пользователей кому доступен бот
-list_user = ['moskva_max', 'Sasha6Popova']
-
-
-# Функция для отсечения символов после запятой
 def toFixed(numObj, digits=0):
+    """
+    Удаляет символы после запятой
+    :param numObj: входное значение
+    :param digits: сколько символов оставить после запятой, если 0 то запятая убирается
+    :return:
+    """
     return f"{numObj:.{digits}f}"
 
 
@@ -214,7 +216,7 @@ def bot_message(message):
 
             elif message.text == '🔱 Другое':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                item1 = types.KeyboardButton('Настройки')
+                item1 = types.KeyboardButton('🛠️ Настройка напоминалки')
                 item3 = types.KeyboardButton('🗿 Стикер')
                 back = types.KeyboardButton('◀ Назад')
                 markup.add(item1, item3, back)
@@ -234,6 +236,20 @@ def bot_message(message):
                                  '◀ Назад',
                                  reply_markup=markup
                                  )
+
+            elif message.text == '🛠️ Настройка напоминаний':
+                try:
+                    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+                    item1 = types.KeyboardButton('✏️ Добавить дату')
+                    item2 = types.KeyboardButton('📍 Ближайшая дата')
+                    item3 = types.KeyboardButton('🗒️ Все даты')
+                    back = types.KeyboardButton('◀ Назад')
+                    markup.add(item1, item2, item3, back)
+
+                    bot.send_message(message.chat.id, 'Можно настроить ', reply_markup=markup)
+
+                except:
+                    bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
             elif message.text == '🗿 Стикер':
                 try:
@@ -300,6 +316,7 @@ def bot_message(message):
 
                 except:
                     bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
+
     else:
         bot.send_message(message.chat.id, message.text)
 
