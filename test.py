@@ -1,24 +1,37 @@
-import random
+import telegram
+from telegram.ext import Updater, CommandHandler
 
-import psycopg2
+import config
 
-con = psycopg2.connect(
-    database="d80f0uj85llbhp",
-    user="pspdigkdmeocay",
-    password="20761c78ace93389b679235bfc5bf3878d2813e39ddf4ed1112b1a41241f787e",
-    host="ec2-54-73-152-36.eu-west-1.compute.amazonaws.com",
-    port="5432"
-)
+bot = telegram.Bot(token=config.TOKEN)
 
-i = random.randint(1, 100)
 
-cur = con.cursor()
+def start(update, context):
+    context.bot.send_message(chat_id=update.message.chat_id,
+                             text="Привет, мы начинаем отсчет!")
 
-cur.execute('SELECT * FROM public."Stickers" WHERE id = ' + str(i))
+    context.job_queue.run_repeating(callback_day,
+                                    interval=30,  # В секундах
+                                    first=0,  # Если 0 то первое отправляется сразу
+                                    context=update.message.chat_id)
 
-rows = cur.fetchall()
 
-for row in rows:
-    print(row[1])
+def callback_day(context):
+    chat_id = context.job.context
+    context.bot.send_message(chat_id=chat_id,
+                             text="Это очередное сообщение, проверь сколько прошло времени")
 
-con.close()
+
+def main():
+    updater = Updater(config.TOKEN, use_context=True)
+    dp = updater.dispatcher
+    dp.add_handler()
+    dp.add_handler(CommandHandler("start", start, pass_job_queue=True))
+
+    updater.start_polling()
+
+    updater.idle()
+
+
+if __name__ == '__main__':
+    main()
