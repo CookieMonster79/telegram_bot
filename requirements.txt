@@ -2,4 +2,3 @@ pyTelegramBotAPI==3.8.3
 requests
 tabulate
 psycopg2
-telegram
