@@ -5,8 +5,6 @@ import requests
 import telebot
 from tabulate import tabulate
 from telebot import types
-
-import telegram
 from telegram.ext import Updater, MessageHandler, Filters
 
 import config
