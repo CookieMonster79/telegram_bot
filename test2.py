@@ -1,7 +1,16 @@
-with open('Groovy Script/loginForEmpl.groovy', 'r', encoding="utf-8") as f:
-    old_data = f.read()
+import time
 
-new_data = old_data.replace('Иванов', 'Родионов')
+import schedule
 
-with open('Groovy Script/loginForEmpl.groovy', 'w', encoding="utf-8") as f:
-    f.write(new_data)
+
+def job():
+    print("I'm working...")
+
+
+schedule.every().at_time()
+schedule.every().hour.do(job)
+schedule.every().second.do(job)
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)

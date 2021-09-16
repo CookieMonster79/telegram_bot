@@ -67,7 +67,7 @@ def bot_message(message):
                 item2 = types.KeyboardButton('📦 Заявок сегодня')
                 item3 = types.KeyboardButton('📦 Стат. по клиентам')
                 item4 = types.KeyboardButton('📦 Войти под ...')
-                item5 = types.KeyboardButton('📦 Ещё одно 3')
+                item5 = types.KeyboardButton('🚪 Проверить заявки')
                 item6 = types.KeyboardButton('📦 Ещё одно 4')
                 back = types.KeyboardButton('◀ Назад')
                 markup.add(item1, item2, item3, item4, item5, item6, back)
@@ -214,6 +214,13 @@ def bot_message(message):
                     # добавляем следующий шаг, перенаправляющий пользователя на message_input_step
                 except:
                     bot.send_message(message.chat.id, 'Что-то пошло не по плану :(')
+
+            elif message.text == '🚪 Проверить заявки':
+                bot.send_message(message.chat.id, 'Что-то пошло не по плану :(')
+                #try:
+
+               # except:
+                #    bot.send_message(message.chat.id, 'Что-то пошло не по плану :(')
 
             elif message.text == '🔱 Другое':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
