@@ -6,15 +6,9 @@ import telebot
 from tabulate import tabulate
 from telebot import types
 
-#import telegram
-#from telegram.ext import Updater, MessageHandler, Filters
-
 import config
 
 bot = telebot.TeleBot(config.TOKEN)
-
-#updater = Updater(config.TOKEN, use_context=True)
-#dp = updater.dispatcher
 
 # Список идентификаторов пользователей кому доступен бот
 list_user = ['moskva_max', 'Sasha6Popova']
@@ -247,58 +241,46 @@ def bot_message(message):
             elif message.text == '🛠️ Настройка напоминаний':
                 try:
                     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                    item1 = types.KeyboardButton('✏️ Добавить дату')
                     item2 = types.KeyboardButton('📍 Ближайшая дата')
                     item3 = types.KeyboardButton('🗒️ Все даты')
                     back = types.KeyboardButton('◀ Назад')
-                    markup.add(item1, item2, item3, back)
+                    markup.add(item2, item3, back)
 
                     bot.send_message(message.chat.id, '🛠️ Настройка напоминаний', reply_markup=markup)
 
                 except:
                     bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
- #           elif message.text == '✏️ Добавить дату':
- #               try:
- #                   markup = types.ForceReply(selective=False)
- #
- #                   bot.send_message(message.chat.id,
- #                                    f"Введите Описание и Дату Д.Р. (пример - День рождение Саши, 02.09.1995)",
- #                                   reply_markup=markup)
- #
-#                    @bot.message_handler(content_types=['text'])
- #                   def message_input_step(message_user):
-#                        global user_text_note
-#                        user_text_note = message_user.text
+            elif message.text == '🗒️ Все даты':
+                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+                item2 = types.KeyboardButton('📍 Ближайшая дата')
+                item3 = types.KeyboardButton('🗒️ Все даты')
+                back = types.KeyboardButton('◀ Назад')
+                markup.add(item2, item3, back)
 
- #                       if user_text_note != '':
-  #                          def callback_day(context):
- #                               context.bot.send_message(chat_id=context.job.context,
- #                                                        text="Это очередное сообщение, проверь сколько прошло времени")
+                try:
+                    con = psycopg2.connect(
+                        database=config.PG_DATABASE,
+                        user=config.PG_USER,
+                        password=config.PG_PASSWORD,
+                        host=config.PG_HOST,
+                        port=config.PG_PORT
+                    )
 
- #                           def bot_message(update, context):
-#                                context.job_queue.run_repeating(callback_day,
- #                                                               interval=30,  # В секундах
- #                                                               first=5,  # Если 0 то первое отправляется сразу
- #                                                               context=update.message.chat_id)
+                    cur = con.cursor()
 
- #                           dp.add_handler(MessageHandler(Filters.text, bot_message))
+                    cur.execute('SELECT * FROM public."Birthday"')
 
- #                           markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
- #                           item1 = types.KeyboardButton('✏️ Добавить дату')
- #                           item2 = types.KeyboardButton('📍 Ближайшая дата')
- #                           item3 = types.KeyboardButton('🗒️ Все даты')
- #                           back = types.KeyboardButton('◀ Назад')
- #                           markup.add(item1, item2, item3, back)
+                    rows = cur.fetchall()
 
- #                           bot.send_message(message.chat.id, text=user_text_note, reply_markup=markup)
+                    for row in rows:
+                        bot.send_message(message.chat.id, parse_mode="HTML", text=
+                                         "Описание: " + row[1] + "<pre>\n</pre> Дата рождения: " + str(row[2]) + "<pre>\n</pre> Следующая дата: " + str(row[3]))
 
- #                   bot.register_next_step_handler(message,
-  #                                                 message_input_step)  # добавляем следующий шаг, перенаправляющий пользователя на message_input_step
+                    con.close()
 
-
-  #              except:
-  #                  bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(', reply_markup=markup)
+                except:
+                    bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(', reply_markup=markup)
 
             elif message.text == '🗿 Стикер':
                 try:
@@ -371,6 +353,3 @@ def bot_message(message):
 
 
 bot.polling(none_stop=True)
-
-#updater.start_polling()
-#updater.idle()
