@@ -1,10 +1,13 @@
 import random
+from datetime import datetime
 
 import psycopg2
 import requests
 import telebot
+from apscheduler.schedulers.background import BackgroundScheduler
 from tabulate import tabulate
 from telebot import types
+from telebot.types import KeyboardButton
 
 import config
 
@@ -12,6 +15,7 @@ bot = telebot.TeleBot(config.TOKEN)
 
 # Список идентификаторов пользователей кому доступен бот
 list_user = ['moskva_max', 'Sasha6Popova']
+
 
 
 @bot.message_handler(commands=['start'])
@@ -50,7 +54,37 @@ def toFixed(numObj, digits=0):
 def bot_message(message):
     if message.chat.username in list_user:
         if message.chat.type == 'private':
-            if message.text == '🎇 Рандомное число':
+
+            def approvDate():
+                text = 'Пусто'
+                con = psycopg2.connect(
+                    database="d80f0uj85llbhp",
+                    user="pspdigkdmeocay",
+                    password="20761c78ace93389b679235bfc5bf3878d2813e39ddf4ed1112b1a41241f787e",
+                    host="ec2-54-73-152-36.eu-west-1.compute.amazonaws.com",
+                    port="5432"
+                )
+                cur = con.cursor()
+                cur.execute('SELECT text, year, dm from public."Birthday"')
+                rows = cur.fetchall()
+                curDate = datetime.now().strftime("%d-%m")
+                curYear = datetime.now().strftime("%Y")
+                for row in rows:
+                    if (row[2] == curDate):
+                        text = 'Сегодня ' + row[0] + ', ' + 'родился(-лась) ' + row[1] + ', лет ' + (int(curYear) - int(row[1]))
+                    else:
+                        text = 'Сегодня, нет ни у кого дня рождения!'
+
+                con.close()
+                return text
+
+            if message.chat:
+                scheduler = BackgroundScheduler({'apscheduler.timezone': 'UTC'})
+                scheduler.add_job(bot.send_message,
+                                  'interval', hours=24, args=[message.chat.id, approvDate()])
+                scheduler.start()
+
+            elif message.text == '🎇 Рандомное число':
                 bot.send_message(message.chat.id, 'Ваше число: ' + str(random.randint(0, 100)))
             elif message.text == '🔮 Узнаем погоду':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -91,7 +125,6 @@ def bot_message(message):
                 try:
                     url = f"{config.PATH}sd/services/rest/exec?accessKey={config.ACCESSKEY}"
 
-                    payload = {}
                     files = [
                         ('script', ('countCall.groovy', open('Groovy Script/countCall.groovy', 'rb'),
                                     'application/octet-stream'))
@@ -101,7 +134,7 @@ def bot_message(message):
                         'Cookie': 'JSESSIONID=F6142A7BA1F133CF7C2AFC77DB5D8BA6'
                     }
 
-                    response = requests.request("POST", url, headers=headers, data=payload, files=files)
+                    response = requests.request("POST", url, headers=headers, data={}, files=files)
 
                     data = response.text
 
@@ -114,7 +147,6 @@ def bot_message(message):
                 try:
                     url = f"{config.PATH}sd/services/rest/exec?accessKey={config.ACCESSKEY}"
 
-                    payload = {}
                     files = [
                         ('script', ('countCall.groovy', open('Groovy Script/tableStatisticForClient.groovy', 'rb'),
                                     'application/octet-stream'))
@@ -124,7 +156,7 @@ def bot_message(message):
                         'Cookie': 'JSESSIONID=F6142A7BA1F133CF7C2AFC77DB5D8BA6'
                     }
 
-                    response = requests.request("POST", url, headers=headers, data=payload, files=files)
+                    response = requests.request("POST", url, headers=headers, data={}, files=files)
 
                     data = response.text
 
@@ -177,9 +209,8 @@ def bot_message(message):
                             with open('Groovy Script/loginForEmpl.groovy', 'w', encoding="utf-8") as f:
                                 f.write(new_data)
 
-                            url = f"{config.PATH}sd/services/rest/exec?accessKey={config.ACCESSKEY}"
+                            url_ACCESSKEY = f"{config.PATH}sd/services/rest/exec?accessKey={config.ACCESSKEY}"
 
-                            payload = {}
                             files = [
                                 ('script', ('loginForEmpl.groovy', open('Groovy Script/loginForEmpl.groovy', 'rb'),
                                             'application/octet-stream'))
@@ -189,7 +220,7 @@ def bot_message(message):
                                 'Cookie': 'JSESSIONID=F6142A7BA1F133CF7C2AFC77DB5D8BA6'
                             }
 
-                            response = requests.request("POST", url, headers=headers, data=payload, files=files)
+                            response = requests.request("POST", url_ACCESSKEY, headers=headers, data={}, files=files)
 
                             data = response.text
 
@@ -200,7 +231,7 @@ def bot_message(message):
                             item4 = types.KeyboardButton('📦 Войти под ...')
                             item5 = types.KeyboardButton('📦 Ещё одно 3')
                             item6 = types.KeyboardButton('📦 Ещё одно 4')
-                            back = types.KeyboardButton('◀ Назад')
+                            back: KeyboardButton = types.KeyboardButton('◀ Назад')
                             markup.add(item1, item2, item3, item4, item5, item6, back)
 
                             bot.send_message(message.chat.id, text=data, parse_mode="HTML", reply_markup=markup)
@@ -217,10 +248,10 @@ def bot_message(message):
 
             elif message.text == '🚪 Проверить заявки':
                 bot.send_message(message.chat.id, 'Что-то пошло не по плану :(')
-                #try:
+                # try:
 
-               # except:
-                #    bot.send_message(message.chat.id, 'Что-то пошло не по плану :(')
+            # except:
+            #    bot.send_message(message.chat.id, 'Что-то пошло не по плану :(')
 
             elif message.text == '🔱 Другое':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -275,14 +306,14 @@ def bot_message(message):
                     )
 
                     cur = con.cursor()
-
                     cur.execute('SELECT * FROM public."Birthday"')
-
                     rows = cur.fetchall()
 
                     for row in rows:
                         bot.send_message(message.chat.id, parse_mode="HTML", text=
-                                         "Описание: " + row[1] + "<pre>\n</pre> Дата рождения: " + str(row[2].strftime("%d.%m.%Y")) + "<pre>\n</pre> Следующая дата: " + str(row[3].strftime("%d.%m.%Y")))
+                        "Описание: " + row[1] + "<pre>\n</pre> Дата рождения: " + str(
+                            row[2].strftime("%d.%m.%Y")) + "<pre>\n</pre> Следующая дата: " + str(
+                            row[3].strftime("%d.%m.%Y")))
 
                     con.close()
 

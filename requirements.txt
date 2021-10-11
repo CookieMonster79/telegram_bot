@@ -3,3 +3,6 @@ requests
 tabulate
 psycopg2
 telegram
+APScheduler
+schedule
+django-scheduler
