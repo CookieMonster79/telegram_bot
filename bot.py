@@ -17,7 +17,6 @@ bot = telebot.TeleBot(config.TOKEN)
 list_user = ['moskva_max', 'Sasha6Popova']
 
 
-
 @bot.message_handler(commands=['start'])
 def start_command(message):
     """
@@ -58,11 +57,11 @@ def bot_message(message):
             def approvDate():
                 text = 'Пусто'
                 con = psycopg2.connect(
-                    database="d80f0uj85llbhp",
-                    user="pspdigkdmeocay",
-                    password="20761c78ace93389b679235bfc5bf3878d2813e39ddf4ed1112b1a41241f787e",
-                    host="ec2-54-73-152-36.eu-west-1.compute.amazonaws.com",
-                    port="5432"
+                    database=config.PG_DATABASE,
+                    user=config.PG_USER,
+                    password=config.PG_PASSWORD,
+                    host=config.PG_HOST,
+                    port=config.PG_PORT
                 )
                 cur = con.cursor()
                 cur.execute('SELECT text, year, dm from public."Birthday"')
@@ -71,14 +70,14 @@ def bot_message(message):
                 curYear = datetime.now().strftime("%Y")
                 for row in rows:
                     if (row[2] == curDate):
-                        text = 'Сегодня ' + row[0] + ', ' + 'родился(-лась) ' + row[1] + ', лет ' + (int(curYear) - int(row[1]))
+                        text = 'Сегодня ' + row[0] + ', ' + 'родился(-лась) ' + row[1] # + ', лет ' + (int(curYear) - int(row[1]))
                     else:
                         text = 'Сегодня, нет ни у кого дня рождения!'
 
                 con.close()
                 return text
 
-            if message.chat:
+            if message.text == '📍 Запуск планировщика':
                 scheduler = BackgroundScheduler({'apscheduler.timezone': 'UTC'})
                 scheduler.add_job(bot.send_message,
                                   'interval', hours=24, args=[message.chat.id, approvDate()])
@@ -279,7 +278,7 @@ def bot_message(message):
             elif message.text == '🛠️ Настройка напоминаний':
                 try:
                     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                    item2 = types.KeyboardButton('📍 Ближайшая дата')
+                    item2 = types.KeyboardButton('📍 Запуск планировщика')
                     item3 = types.KeyboardButton('🗒️ Все даты')
                     back = types.KeyboardButton('◀ Назад')
                     markup.add(item2, item3, back)
@@ -291,7 +290,7 @@ def bot_message(message):
 
             elif message.text == '🗒️ Все даты':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                item2 = types.KeyboardButton('📍 Ближайшая дата')
+                item2 = types.KeyboardButton('📍 Запуск планировщика')
                 item3 = types.KeyboardButton('🗒️ Все даты')
                 back = types.KeyboardButton('◀ Назад')
                 markup.add(item2, item3, back)
