@@ -70,7 +70,7 @@ def bot_message(message):
                 curYear = datetime.now().strftime("%Y")
                 for row in rows:
                     if (row[2] == curDate):
-                        text = 'Сегодня ' + row[0] + ', ' + 'родился(-лась) ' + row[1] # + ', лет ' + (int(curYear) - int(row[1]))
+                        text = 'Сегодня ' + row[0] + ', ' + 'родился(-лась) ' + row[1] + ', лет ' + (int(curYear) - int(row[1]))
                     else:
                         text = 'Сегодня, нет ни у кого дня рождения!'
 
