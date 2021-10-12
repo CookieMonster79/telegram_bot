@@ -78,9 +78,9 @@ def bot_message(message):
                 return text
 
             if message.text == '📍 Запуск планировщика':
-                scheduler = BackgroundScheduler({'apscheduler.timezone': 'UTC'})
+                scheduler = BackgroundScheduler({'apscheduler.timezone': 'Europe/Moscow'})
                 scheduler.add_job(bot.send_message,
-                                  'interval', hours=24, args=[message.chat.id, approvDate()])
+                                  'cron', hour='10', minute='00', args=[message.chat.id, approvDate()])
                 scheduler.start()
 
             elif message.text == '🎇 Рандомное число':

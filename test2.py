@@ -1,16 +1,8 @@
-import time
+import math
 
-import schedule
+#Площадь круга
+pi = 3.14
+r = 12
 
-
-def job():
-    print("I'm working...")
-
-
-schedule.every().at_time()
-schedule.every().hour.do(job)
-schedule.every().second.do(job)
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+s = pi*r**2
+print(s)
