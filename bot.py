@@ -3,6 +3,7 @@ from datetime import datetime
 
 import psycopg2
 import requests
+import schedule
 import telebot
 from apscheduler.schedulers.background import BackgroundScheduler
 from tabulate import tabulate
@@ -32,6 +33,33 @@ def start_command(message):
 
     markup.add(item1, item2, item3, item4)
 
+    def approvDate():
+        text = 'Пусто'
+        con = psycopg2.connect(
+            database=config.PG_DATABASE,
+            user=config.PG_USER,
+            password=config.PG_PASSWORD,
+            host=config.PG_HOST,
+            port=config.PG_PORT
+        )
+        cur = con.cursor()
+        cur.execute('SELECT text, year, dm from public."Birthday"')
+        rows = cur.fetchall()
+        curDate = datetime.now().strftime("%d-%m")
+        curYear = datetime.now().strftime("%Y")
+        for row in rows:
+            if (row[2] == curDate):
+                text = 'Сегодня ' + row[0] + ', ' + 'родился(-лась) ' + row[1] + ', лет ' + (int(curYear) - int(row[1]))
+            else:
+                text = 'Сегодня, нет ни у кого дня рождения!'
+
+        con.close()
+        return text
+
+    scheduler.add_job(bot.send_message, trigger='cron', hour='16', minute='35',
+                          args=[message.chat.id, approvDate()])
+    scheduler.start()
+
     bot.send_message(message.chat.id,
                      'Привет!.\n' +
                      'Умею всякое.\n',
@@ -48,42 +76,16 @@ def toFixed(numObj, digits=0):
     """
     return f"{numObj:.{digits}f}"
 
+scheduler = BackgroundScheduler({'apscheduler.timezone': 'Europe/Moscow'})
+
 
 @bot.message_handler(content_types=['text'])
 def bot_message(message):
+    e = 0
     if message.chat.username in list_user:
         if message.chat.type == 'private':
 
-            def approvDate():
-                text = 'Пусто'
-                con = psycopg2.connect(
-                    database=config.PG_DATABASE,
-                    user=config.PG_USER,
-                    password=config.PG_PASSWORD,
-                    host=config.PG_HOST,
-                    port=config.PG_PORT
-                )
-                cur = con.cursor()
-                cur.execute('SELECT text, year, dm from public."Birthday"')
-                rows = cur.fetchall()
-                curDate = datetime.now().strftime("%d-%m")
-                curYear = datetime.now().strftime("%Y")
-                for row in rows:
-                    if (row[2] == curDate):
-                        text = 'Сегодня ' + row[0] + ', ' + 'родился(-лась) ' + row[1] + ', лет ' + (int(curYear) - int(row[1]))
-                    else:
-                        text = 'Сегодня, нет ни у кого дня рождения!'
-
-                con.close()
-                return text
-
-            if message.text == '📍 Запуск планировщика':
-                scheduler = BackgroundScheduler({'apscheduler.timezone': 'Europe/Moscow'})
-                scheduler.add_job(bot.send_message,
-                                  'cron', hour='10', minute='00', args=[message.chat.id, approvDate()])
-                scheduler.start()
-
-            elif message.text == '🎇 Рандомное число':
+            if message.text == '🎇 Рандомное число':
                 bot.send_message(message.chat.id, 'Ваше число: ' + str(random.randint(0, 100)))
             elif message.text == '🔮 Узнаем погоду':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -387,6 +389,5 @@ def bot_message(message):
 
     else:
         bot.send_message(message.chat.id, message.text)
-
 
 bot.polling(none_stop=True)
