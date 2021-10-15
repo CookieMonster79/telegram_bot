@@ -145,6 +145,8 @@ def bot_message(message):
                     bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
             elif message.text == '📦 Стат. по клиентам':
+                '''
+                !!!!!!!!Переписать статистику по клиентам под вывод на телефон'''
                 try:
                     url = f"{config.PATH}sd/services/rest/exec?accessKey={config.ACCESSKEY}"
 
@@ -183,11 +185,12 @@ def bot_message(message):
                     headers = ["Название", "Заявки", "Сотрудники", "Регл. работы"]
 
                     text_mess = tabulate(
-                        [table[0], table[1], table[2], table[3], table[4], table[5], table[6], table[7], table[8]],
+                        [table[0]#, table[1], table[2], table[3], table[4], table[5], table[6], table[7], table[8]
+                         ],
                         headers)
 
                     bot.send_message(message.chat.id,
-                                     f"<pre>{text_mess}</pre>", parse_mode="HTML")
+                                     {text_mess}, parse_mode="HTML")
                 except:
                     bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
