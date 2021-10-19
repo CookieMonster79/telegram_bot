@@ -3,11 +3,9 @@ from datetime import datetime
 
 import psycopg2
 import requests
-import schedule
 import telebot
 from apscheduler.schedulers.background import BackgroundScheduler
 from tabulate import tabulate
-from telebot import types
 from telebot.types import KeyboardButton
 
 import config
@@ -57,7 +55,7 @@ def start_command(message):
         return text
 
     scheduler.add_job(bot.send_message, trigger='cron', hour='16', minute='35',
-                          args=[message.chat.id, approvDate()])
+                      args=[message.chat.id, approvDate()])
     scheduler.start()
 
     bot.send_message(message.chat.id,
@@ -75,6 +73,7 @@ def toFixed(numObj, digits=0):
     :return:
     """
     return f"{numObj:.{digits}f}"
+
 
 scheduler = BackgroundScheduler({'apscheduler.timezone': 'Europe/Moscow'})
 
@@ -185,7 +184,7 @@ def bot_message(message):
                     headers = ["Название", "Заявки", "Сотрудники", "Регл. работы"]
 
                     text_mess = tabulate(
-                        [table[0]#, table[1], table[2], table[3], table[4], table[5], table[6], table[7], table[8]
+                        [table[0]  # , table[1], table[2], table[3], table[4], table[5], table[6], table[7], table[8]
                          ],
                         headers)
 
@@ -316,7 +315,7 @@ def bot_message(message):
                     for row in rows:
                         bot.send_message(message.chat.id, parse_mode="HTML", text=
                         "Описание: " + row[0] + "<pre>\n</pre> Год рождения: " +
-                            row[1] + "<pre>\n</pre> День и месяц: " + row[2])
+                        row[1] + "<pre>\n</pre> День и месяц: " + row[2])
 
                     con.close()
 
@@ -391,5 +390,6 @@ def bot_message(message):
 
     else:
         bot.send_message(message.chat.id, message.text)
+
 
 bot.polling(none_stop=True)
