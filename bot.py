@@ -189,7 +189,7 @@ def bot_message(message):
                         headers)
 
                     bot.send_message(message.chat.id,
-                                     {text_mess}, parse_mode="HTML")
+                                     text_mess, parse_mode="HTML")
                 except:
                     bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
