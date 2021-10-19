@@ -54,7 +54,7 @@ def start_command(message):
         con.close()
         return text
 
-    scheduler.add_job(bot.send_message, trigger='cron', hour='16', minute='35',
+    scheduler.add_job(bot.send_message, trigger='cron', hour='10', minute='00',
                       args=[message.chat.id, approvDate()])
     scheduler.start()
 
