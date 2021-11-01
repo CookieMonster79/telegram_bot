@@ -8,7 +8,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from tabulate import tabulate
 from telebot import types
 from telebot.types import KeyboardButton
-from threading import Thread
 
 
 import config
@@ -57,13 +56,9 @@ def start_command(message):
         con.close()
         return text
 
-    def run():
-        scheduler.add_job(bot.send_message, trigger='cron', hour='10', minute='00',
-                          args=[message.chat.id, approvDate()], id=f'Задача {text}')
-        scheduler.start()
-
-    thread = Thread(target=run())
-    thread.start()
+    scheduler.add_job(bot.send_message, trigger='cron', hour='10', minute='00',
+                      args=[message.chat.id, approvDate()], id=f'Задача {text}')
+    scheduler.start()
 
     bot.send_message(message.chat.id,
                      'Привет!.\n' +
