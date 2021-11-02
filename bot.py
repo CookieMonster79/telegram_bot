@@ -3,13 +3,13 @@ from datetime import datetime
 
 import psycopg2
 import requests
+import schedule
 import telebot
 from apscheduler.schedulers.background import BackgroundScheduler
 from tabulate import tabulate
 from telebot import types
 from telebot.types import KeyboardButton
 from threading import Thread
-
 
 import config
 
@@ -58,9 +58,10 @@ def start_command(message):
         return text
 
     def run():
-        scheduler.add_job(bot.send_message, trigger='cron', hour='10', minute='00',
-                          args=[message.chat.id, approvedDate()])
-        scheduler.start()
+        if scheduler.get_jobs():
+            scheduler.add_job(bot.send_message, trigger='cron', hour='10', minute='00',
+                              args=[message.chat.id, approvedDate()])
+            scheduler.start()
 
     thread = Thread(target=run())
     thread.start()
@@ -323,8 +324,8 @@ def bot_message(message):
 
                     for row in rows:
                         bot.send_message(message.chat.id, parse_mode="HTML",
-                        text="Описание: " + row[0] + "<pre>\n</pre> Год рождения: " +
-                        row[1] + "<pre>\n</pre> День и месяц: " + row[2])
+                                         text="Описание: " + row[0] + "<pre>\n</pre> Год рождения: " +
+                                              row[1] + "<pre>\n</pre> День и месяц: " + row[2])
 
                     con.close()
 
