@@ -6,7 +6,6 @@ import requests
 import telebot
 from apscheduler.schedulers.background import BackgroundScheduler
 from tabulate import tabulate
-from telebot import types
 from telebot.types import KeyboardButton
 from threading import Thread
 
@@ -34,7 +33,7 @@ def start_command(message):
 
     markup.add(item1, item2, item3, item4)
 
-    def approvDate():
+    def approvedDate():
         text = 'Пусто'
         con = psycopg2.connect(
             database=config.PG_DATABASE,
@@ -49,7 +48,7 @@ def start_command(message):
         curDate = datetime.now().strftime("%d-%m")
         curYear = datetime.now().strftime("%Y")
         for row in rows:
-            if (row[2] == curDate):
+            if row[2] == curDate:
                 text = 'Сегодня ' + row[0] + ', ' + 'родился(-лась) ' + row[1] + ', лет ' + (int(curYear) - int(row[1]))
             else:
                 text = 'Сегодня, нет ни у кого дня рождения!'
@@ -59,7 +58,7 @@ def start_command(message):
 
     def run():
         scheduler.add_job(bot.send_message, trigger='cron', hour='10', minute='00',
-                          args=[message.chat.id, approvDate()])
+                          args=[message.chat.id, approvedDate()])
         scheduler.start()
 
     thread = Thread(target=run())
@@ -230,21 +229,23 @@ def bot_message(message):
                                 'Cookie': 'JSESSIONID=F6142A7BA1F133CF7C2AFC77DB5D8BA6'
                             }
 
-                            response = requests.request("POST", url_ACCESSKEY, headers=headers, data={}, files=files)
+                            responseNSD = requests.request("POST", url_ACCESSKEY, headers=headers, data={}, files=files)
 
-                            data = response.text
+                            dataResponse = responseNSD.text
 
-                            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                            item1 = types.KeyboardButton('🍀 Статус системы')
-                            item2 = types.KeyboardButton('📦 Заявок сегодня')
-                            item3 = types.KeyboardButton('📦 Стат. по клиентам')
-                            item4 = types.KeyboardButton('📦 Войти под ...')
-                            item5 = types.KeyboardButton('📦 Ещё одно 3')
-                            item6 = types.KeyboardButton('📦 Ещё одно 4')
-                            back: KeyboardButton = types.KeyboardButton('◀ Назад')
-                            markup.add(item1, item2, item3, item4, item5, item6, back)
+                            markupKeybord = types.ReplyKeyboardMarkup(resize_keyboard=True)
+                            item1Button = types.KeyboardButton('🍀 Статус системы')
+                            item2Button = types.KeyboardButton('📦 Заявок сегодня')
+                            item3Button = types.KeyboardButton('📦 Стат. по клиентам')
+                            item4Button = types.KeyboardButton('📦 Войти под ...')
+                            item5Button = types.KeyboardButton('📦 Ещё одно 3')
+                            item6Button = types.KeyboardButton('📦 Ещё одно 4')
+                            backButton: KeyboardButton = types.KeyboardButton('◀ Назад')
+                            markupKeybord.add(item1Button, item2Button, item3Button, item4Button, item5Button,
+                                              item6Button, backButton)
 
-                            bot.send_message(message.chat.id, text=data, parse_mode="HTML", reply_markup=markup)
+                            bot.send_message(message.chat.id, text=dataResponse, parse_mode="HTML",
+                                             reply_markup=markupKeybord)
 
                             new_data2 = new_data.replace(user_text, 'Иванов')
                             with open('Groovy Script/loginForEmpl.groovy', 'w', encoding="utf-8") as f:
@@ -320,8 +321,8 @@ def bot_message(message):
                     rows = cur.fetchall()
 
                     for row in rows:
-                        bot.send_message(message.chat.id, parse_mode="HTML", text=
-                        "Описание: " + row[0] + "<pre>\n</pre> Год рождения: " +
+                        bot.send_message(message.chat.id, parse_mode="HTML",
+                        text="Описание: " + row[0] + "<pre>\n</pre> Год рождения: " +
                         row[1] + "<pre>\n</pre> День и месяц: " + row[2])
 
                     con.close()
@@ -358,7 +359,8 @@ def bot_message(message):
             elif message.text == '🏤 Москва':
                 try:
                     r = requests.get(
-                        f"http://api.openweathermap.org/data/2.5/weather?q=moscow&appid={config.WEATHER_TOKEN}&units=metric"
+                        f"http://api.openweathermap.org/data/2.5/weather?q=moscow&appid="
+                        f"{config.WEATHER_TOKEN}&units=metric"
                     )
                     data = r.json()
 
@@ -378,7 +380,8 @@ def bot_message(message):
             elif message.text == '🚣 Санкт-Петербург':
                 try:
                     r = requests.get(
-                        f"http://api.openweathermap.org/data/2.5/weather?q=Saint%20Petersburg&appid={config.WEATHER_TOKEN}&units=metric"
+                        f"http://api.openweathermap.org/data/2.5/weather?q=Saint%20Petersburg&appid="
+                        f"{config.WEATHER_TOKEN}&units=metric"
                     )
                     data = r.json()
 
