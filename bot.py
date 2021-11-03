@@ -58,7 +58,7 @@ def start_command(message):
         return text
 
     def run():
-        if scheduler.get_jobs():
+        if len(scheduler.get_jobs()) == 0:
             scheduler.add_job(bot.send_message, trigger='cron', hour='10', minute='00',
                               args=[message.chat.id, approvedDate()])
             scheduler.start()
@@ -68,7 +68,8 @@ def start_command(message):
 
     bot.send_message(message.chat.id,
                      'Привет!.\n' +
-                     'Умею всякое.\n',
+                     'Умею всякое.\n' +
+                     'Сейчас например запустил планировщик, теперь каждый день в 10:00 будут приходить сообщения.\n',
                      reply_markup=markup
                      )
 
