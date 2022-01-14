@@ -1,14 +1,14 @@
 #Токен бота
-TOKEN = '11111111111'
+TOKEN = '1038330525:AAHtatdaj1wSAnDQTr5uBqdd1k9LILqe1Eo'
 
 #Токен для получения погоды
-WEATHER_TOKEN = '11111111111111'
+WEATHER_TOKEN = 'bf31c42882f1947674dec4e565d46ab8'
 
 #Адрес NSD
-PATH = 'https://portal.com/'
+PATH = 'https://keystone.itsm365.com/'
 
 #AccessKEY - system
-ACCESSKEY = '111'
+ACCESSKEY = '89e1f633-b51c-4948-bebb-6d09dc422939'
 
 # Данные для подключения к PostgreSQL
 PG_DATABASE = 'd80f0uj85llbhp'
