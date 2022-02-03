@@ -1,6 +1,7 @@
 import random
 from datetime import datetime
 
+import prettytable as pt
 import psycopg2
 import requests
 import schedule
@@ -173,30 +174,45 @@ def bot_message(message):
 
                     # data = data.replace("]", "")
                     # data = data.replace("[", "")
-                    data = data.replace(" ", "")
-                    result = data.split(",")
+                    #data = data.replace(" ", "")
+                    #result = data.split(",")
 
-                    def split_list(alist, wanted_parts=1):
-                        length = len(alist)
-                        return [alist[i * length // wanted_parts: (i + 1) * length // wanted_parts]
-                                for i in range(wanted_parts)]
+                    #def split_list(alist, wanted_parts=1):
+#                        length = len(alist)
+ #                       return [alist[i * length // wanted_parts: (i + 1) * length // wanted_parts]
+  #                              for i in range(wanted_parts)]
 
-                    lists = split_list(result, wanted_parts=9)
-                    lenght = len(lists)
+   #                 lists = split_list(result, wanted_parts=9)
+    #                lenght = len(lists)
 
-                    table = {}
+     #               table = {}
 
-                    for i in range(lenght):
-                        pool = lists[i]
-                        table[i] = pool
+       #             for i in range(lenght):
+      #                  pool = lists[i]
+        #                table[i] = pool
 
                     '''text_mess = tabulate(
                         table[0], table[1], table[2], table[3], table[4], table[5], table[6], table[7], table[8],
                         headers="firstrow")'''
-                    text_mess = tabulate(table[0], headers="firstrow")
+                    #text_mess = tabulate(table[0], headers="firstrow")
+
+                    table = pt.PrettyTable(['Symbol', 'Price', 'Change'])
+                    table.align['Symbol'] = 'l'
+                    table.align['Price'] = 'r'
+                    table.align['Change'] = 'r'
+
+                    data = [
+                        ('ABC', 20.85, 1.626),
+                        ('DEF', 78.95, 0.099),
+                        ('GHI', 23.45, 0.192),
+                        ('JKL', 98.85, 0.292),
+                    ]
+
+                    for symbol, price, change in data:
+                        table.add_row([symbol, f'{price:.2f}', f'{change:.3f}'])
 
                     bot.send_message(message.chat.id,
-                                     text_mess, parse_mode="HTML")
+                                     f'<pre>{table}</pre>', parse_mode="HTML")
                 except:
                     bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
