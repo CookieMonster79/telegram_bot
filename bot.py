@@ -195,7 +195,7 @@ def bot_message(message):
                     text_mess = tabulate(
                         [table[0], table[1], table[2], table[3], table[4], table[5], table[6], table[7], table[8]
                          ],
-                        headers, "fancy_grid")
+                        headers="firstrow")
 
                     bot.send_message(message.chat.id,
                                      text_mess, parse_mode="HTML")
