@@ -176,7 +176,7 @@ def bot_message(message):
                     data = data.replace("[", "", 1)
 
                     for i in range(0, 13):
-                        list.extend(data.split(','))
+                        list.extend(data.split(', '))
 
                     table = pt.PrettyTable(["Название", "Заявки", "Сотрудники", "Регл. работы"])
                     table.align['Название'] = 'l'
