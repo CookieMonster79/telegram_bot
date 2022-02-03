@@ -17,7 +17,7 @@ import config
 bot = telebot.TeleBot(config.TOKEN)
 
 # Список идентификаторов пользователей кому доступен бот
-list_user = ['moskva_max', 'Sasha6Popova']
+list_user = ['moskva_max', 'Sa_Mosk']
 
 
 @bot.message_handler(commands=['start'])
