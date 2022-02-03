@@ -181,7 +181,7 @@ def bot_message(message):
                         return [alist[i * length // wanted_parts: (i + 1) * length // wanted_parts]
                                 for i in range(wanted_parts)]
 
-                    lists = split_list(result, wanted_parts=9)
+                    lists = split_list(result, wanted_parts=8)
                     lenght = len(lists)
 
                     table = {}
