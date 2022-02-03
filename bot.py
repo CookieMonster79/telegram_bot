@@ -185,14 +185,23 @@ def bot_message(message):
                     table.align['Регл. работы'] = 'r'
 
                     data = [
-                        (list[0], list[1], list[2], list[3]),
-                        (list[4], list[5], list[6], list[7]),
-                        (list[8], list[9], list[10], list[11]),
-                        (list[12], list[13], list[14], list[15]),
+                        (f'{list[0]}', int(list[1]), int(list[2]), int(list[3])),
+                        (f'{list[4]}', int(list[5]), int(list[6]), int(list[7])),
+                        (f'{list[8]}', int(list[9]), int(list[10]), int(list[11])),
+                        (f'{list[12]}', int(list[13]), int(list[14]), int(list[15])),
+                        (f'{list[16]}', int(list[17]), int(list[18]), int(list[19])),
+                        (f'{list[20]}', int(list[21]), int(list[22]), int(list[23])),
+                        (f'{list[24]}', int(list[25]), int(list[26]), int(list[27])),
+                        (f'{list[28]}', int(list[29]), int(list[30]), int(list[31])),
+                        (f'{list[32]}', int(list[33]), int(list[34]), int(list[35])),
+                        (f'{list[36]}', int(list[37]), int(list[38]), int(list[39])),
+                        (f'{list[40]}', int(list[41]), int(list[42]), int(list[43])),
+                        (f'{list[44]}', int(list[45]), int(list[46]), int(list[47])),
+                        (f'{list[48]}', int(list[49]), int(list[50]), int(list[51])),
                     ]
 
-                    for name, call, emp, regl in data:
-                        table.add_row([name, f'{call:.2f}', f'{emp:.3f}', f'{regl:.4f}'])
+                    for name, call, emp, regalement in data:
+                        table.add_row([name, f'{call:.2f}', f'{emp:.3f}', f'{regalement:.4f}'])
 
                     bot.send_message(message.chat.id,
                                      f'<pre>{table}</pre>', parse_mode="HTML")
