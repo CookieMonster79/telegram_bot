@@ -170,7 +170,7 @@ def bot_message(message):
                     response = requests.request("POST", url, headers=headers, data={}, files=files)
 
                     data = response.text
-
+                    '''
                     data = data.replace("]", "")
                     data = data.replace("[", "")
                     data = data.replace(" ", "")
@@ -189,12 +189,13 @@ def bot_message(message):
                     for i in range(lenght):
                         pool = lists[i]
                         table[i] = pool
+                    
+                    #headers = ["Название", "Заявки", "Сотрудники", "Регл. работы"]
 
-                    headers = ["Название", "Заявки", "Сотрудники", "Регл. работы"]
-
-                    text_mess = tabulate(
-                        [table[0], table[1], table[2], table[3], table[4], table[5], table[6], table[7], table[8]
-                         ],
+                    text_mess = tabulate([table[0], table[1], table[2], table[3], table[4], table[5], table[6], table[7], table[8]                         ],
+                        headers="firstrow")
+                    '''
+                    text_mess = tabulate(response.text,
                         headers="firstrow")
 
                     bot.send_message(message.chat.id,
