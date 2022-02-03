@@ -171,8 +171,8 @@ def bot_message(message):
 
                     data = response.text
 
-                    data = data.replace("]", "")
-                    data = data.replace("[", "")
+                    #data = data.replace("]", "")
+                    #data = data.replace("[", "")
                     data = data.replace(" ", "")
                     result = data.split(",")
 
