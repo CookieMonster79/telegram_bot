@@ -171,8 +171,8 @@ def bot_message(message):
 
                     data = response.text
 
-                    #data = data.replace("]", "")
-                    #data = data.replace("[", "")
+                    # data = data.replace("]", "")
+                    # data = data.replace("[", "")
                     data = data.replace(" ", "")
                     result = data.split(",")
 
@@ -189,11 +189,13 @@ def bot_message(message):
                     for i in range(lenght):
                         pool = lists[i]
                         table[i] = pool
-
+                    '''
                     text_mess = tabulate(
                         [table[0], table[1], table[2], table[3], table[4], table[5], table[6], table[7], table[8]],
                         headers="firstrow")
-
+                    '''
+                    text_mess = tabulate([["sex", "age"], ["Alice", "F", 24], ["Bob", "M", 19]],
+                                         headers="firstrow")
                     bot.send_message(message.chat.id,
                                      text_mess, parse_mode="HTML")
                 except:
