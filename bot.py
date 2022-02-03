@@ -201,7 +201,7 @@ def bot_message(message):
                     ]
 
                     for name, call, emp, regalement in data:
-                        table.add_row([name, f'{call:.2f}', f'{emp:.3f}', f'{regalement:.4f}'])
+                        table.add_row([name, f'{call:.0f}', f'{emp:.0f}', f'{regalement:.0f}'])
 
                     bot.send_message(message.chat.id,
                                      f'<pre>{table}</pre>', parse_mode="HTML")
