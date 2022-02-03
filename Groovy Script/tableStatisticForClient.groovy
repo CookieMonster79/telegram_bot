@@ -6,7 +6,7 @@ def size = sizeClientParent - 1
 
 def i = 0;
 def map = []
-def mapMaps = ["Название", "Заявки", "Сотрудники", "Регл. работы"]
+def mapMaps = [["Название", "Заявки", "Сотрудники", "Регл. работы"]]
 
 while(firstClientParent && i<size)
 {
