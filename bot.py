@@ -193,7 +193,7 @@ def bot_message(message):
                     headers = ["Название", "Заявки", "Сотрудники", "Регл. работы"]
 
                     text_mess = tabulate(
-                        [table[0]  # , table[1], table[2], table[3], table[4], table[5], table[6], table[7], table[8]
+                        [table[0], table[1], table[2], table[3], table[4], table[5], table[6], table[7], table[8]
                          ],
                         headers)
 
