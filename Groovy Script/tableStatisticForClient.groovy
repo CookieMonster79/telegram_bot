@@ -6,7 +6,7 @@ def size = sizeClientParent - 1
 
 def i = 0;
 def map = []
-def mapMaps = [["Название", "Заявки", "Сотрудники", "Регл. работы"]]
+def mapMaps = []
 
 while(firstClientParent && i<size)
 {
@@ -26,7 +26,7 @@ while(firstClientParent && i<size)
       firstClientParent = utils.find('ou$company',[removed:false,parent:op.isNull()])[sizeClientParent-1];
       sizeClientParent--
     }
-  mapMaps << map
+    mapMaps = mapMaps + map
 }
 
 return mapMaps
