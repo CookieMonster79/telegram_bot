@@ -181,7 +181,7 @@ def bot_message(message):
                         return [alist[i * length // wanted_parts: (i + 1) * length // wanted_parts]
                                 for i in range(wanted_parts)]
 
-                    lists = split_list(result, wanted_parts=8)
+                    lists = split_list(result, wanted_parts=9)
                     lenght = len(lists)
 
                     table = {}
@@ -195,7 +195,7 @@ def bot_message(message):
                     text_mess = tabulate(
                         [table[0], table[1], table[2], table[3], table[4], table[5], table[6], table[7], table[8]
                          ],
-                        headers)
+                        headers, "fancy_grid")
 
                     bot.send_message(message.chat.id,
                                      text_mess, parse_mode="HTML")
