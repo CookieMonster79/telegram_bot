@@ -139,10 +139,7 @@ def bot_message(message):
                         ('script', ('countCall.groovy', open('Groovy Script/countCall.groovy', 'rb'),
                                     'application/octet-stream'))
                     ]
-                    headers = {
-                        'Authorization': 'Basic UnVkb21hbkRTQE1PUy5QT0xVUy5HTEQ6MTIz',
-                        'Cookie': 'JSESSIONID=F6142A7BA1F133CF7C2AFC77DB5D8BA6'
-                    }
+                    headers = config.headers
 
                     response = requests.request("POST", url, headers=headers, data={}, files=files)
 
@@ -162,10 +159,7 @@ def bot_message(message):
                         ('script', ('countCall.groovy', open('Groovy Script/tableStatisticForClient.groovy', 'rb'),
                                     'application/octet-stream'))
                     ]
-                    headers = {
-                        'Authorization': 'Basic UnVkb21hbkRTQE1PUy5QT0xVUy5HTEQ6MTIz',
-                        'Cookie': 'JSESSIONID=F6142A7BA1F133CF7C2AFC77DB5D8BA6'
-                    }
+                    headers = config.headers
 
                     response = requests.request("POST", url, headers=headers, data={}, files=files)
 
@@ -240,10 +234,7 @@ def bot_message(message):
                                 ('script', ('loginForEmpl.groovy', open('Groovy Script/loginForEmpl.groovy', 'rb'),
                                             'application/octet-stream'))
                             ]
-                            headers = {
-                                'Authorization': 'Basic UnVkb21hbkRTQE1PUy5QT0xVUy5HTEQ6MTIz',
-                                'Cookie': 'JSESSIONID=F6142A7BA1F133CF7C2AFC77DB5D8BA6'
-                            }
+                            headers = config.headers
 
                             responseNSD = requests.request("POST", url_ACCESSKEY, headers=headers, data={}, files=files)
 

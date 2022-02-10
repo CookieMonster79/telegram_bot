@@ -7,6 +7,12 @@ WEATHER_TOKEN = 'bf31c42882f1947674dec4e565d46ab8'
 #Адрес NSD
 PATH = 'https://keystone.itsm365.com/'
 
+#headers - нужно для правильного формирования POST и GET запросов в ITSM365
+headers = {
+                        'Authorization': 'Basic UnVkb21hbkRTQE1PUy5QT0xVUy5HTEQ6MTIz',
+                        'Cookie': 'JSESSIONID=F6142A7BA1F133CF7C2AFC77DB5D8BA6'
+                    }
+
 #AccessKEY - system
 ACCESSKEY = '89e1f633-b51c-4948-bebb-6d09dc422939'
 
