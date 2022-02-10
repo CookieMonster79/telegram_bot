@@ -154,8 +154,7 @@ def bot_message(message):
                     bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
             elif message.text == '📦 Стат. по клиентам':
-                '''
-                !!!!!!!!Переписать статистику по клиентам под вывод на телефон'''
+
                 try:
                     url = f"{config.PATH}sd/services/rest/exec?accessKey={config.ACCESSKEY}"
 
@@ -175,7 +174,7 @@ def bot_message(message):
                     data = data.replace("]", "", 1)
                     data = data.replace("[", "", 1)
 
-                    for i in range(0, 13):
+                    for i in range(0, 1):
                         list.extend(data.split(', '))
 
                     table = pt.PrettyTable(["Название", "Заявки", "Сотрудники", "Регл. работы"])
@@ -183,6 +182,14 @@ def bot_message(message):
                     table.align['Заявки'] = 'r'
                     table.align['Сотрудники'] = 'r'
                     table.align['Регл. работы'] = 'r'
+
+                    '''
+                    Переписать формирование выводящий таблицы под цикл, пробовал ниже пока не получилось
+                    data = []
+                    for j in range(0, len(list), 4):
+                        a1 = (f'{list[j]}', list[j+1], list[j+2], list[j+3])
+                        data.append(a1)
+                    '''
 
                     data = [
                         (f'{list[0]}', int(list[1]), int(list[2]), int(list[3])),
