@@ -265,11 +265,72 @@ def bot_message(message):
                     bot.send_message(message.chat.id, 'Что-то пошло не по плану :(')
 
             elif message.text == '🚪 Проверить заявки':
-                bot.send_message(message.chat.id, 'Что-то пошло не по плану :(')
-                # try:
+                try:
+                    markup = types.ForceReply(selective=False)
+                    bot.send_message(message.chat.id, f"Введите Фамилию, типа Петров", reply_markup=markup);
 
-            # except:
-            #    bot.send_message(message.chat.id, 'Что-то пошло не по плану :(')
+                    @bot.message_handler(content_types=['text'])
+                    def message_input_step(message_user):
+                        global user_text
+                        user_text = message_user.text
+
+                        if user_text != '':
+                            with open('Groovy Script/SClistEmpl.groovy', 'r', encoding="utf-8") as f:
+                                old_data = f.read()
+
+                            new_data = old_data.replace('Иванов', user_text)
+
+                            with open('Groovy Script/SClistEmpl.groovy', 'w', encoding="utf-8") as f:
+                                f.write(new_data)
+
+                            url_ACCESSKEY = f"{config.PATH}sd/services/rest/exec?accessKey={config.ACCESSKEY}"
+
+                            files = [
+                                ('script', ('SClistEmpl.groovy', open('Groovy Script/SClistEmpl.groovy', 'rb'),
+                                            'application/octet-stream'))
+                            ]
+                            headers = config.headers
+
+                            responseNSD = requests.request("POST", url_ACCESSKEY, headers=headers, data={}, files=files)
+
+                            dataResponse = responseNSD.text.replace("[", "", 1)
+                            dataResponse = dataResponse.replace("]", "", 1)
+
+                            markupKeybord = types.ReplyKeyboardMarkup(resize_keyboard=True)
+                            item1Button = types.KeyboardButton('🍀 Статус системы')
+                            item2Button = types.KeyboardButton('📦 Заявок сегодня')
+                            item3Button = types.KeyboardButton('📦 Стат. по клиентам')
+                            item4Button = types.KeyboardButton('📦 Войти под ...')
+                            item5Button = types.KeyboardButton('🚪 Проверить заявки')
+                            item6Button = types.KeyboardButton('📦 Ещё одно 4')
+                            backButton: KeyboardButton = types.KeyboardButton('◀ Назад')
+
+                            markupKeybord.add(item1Button, item2Button, item3Button, item4Button, item5Button,
+                                              item6Button, backButton)
+
+                            list_empl = dataResponse.split(',')
+
+                            #Формируется Inline клавиатура и кнопки.
+                            InlineMarkup = types.InlineKeyboardMarkup()
+                            item1ButtonInline = types.InlineKeyboardButton(url='www.youtube.ru', text='123')
+                            InlineMarkup.add(item1ButtonInline)
+
+
+                            for i in range(0, len(list_empl)):
+                                bot.send_message(message.chat.id, text=list_empl[i], parse_mode="HTML",
+                                                 reply_markup=InlineMarkup)
+
+                            #Возвращаем файл как было
+                            new_data2 = new_data.replace(user_text, 'Иванов')
+                            with open('Groovy Script/SClistEmpl.groovy', 'w', encoding="utf-8") as f:
+                                f.write(new_data2)
+
+                    bot.register_next_step_handler(message,
+                                                   message_input_step)
+
+                    # добавляем следующий шаг, перенаправляющий пользователя на message_input_step
+                except:
+                    bot.send_message(message.chat.id, 'Что-то пошло не по плану :(')
 
             elif message.text == '🔱 Другое':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
