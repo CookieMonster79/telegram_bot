@@ -387,7 +387,7 @@ def bot_message(message):
                                                             list_call_UUID[l + 3], text=list_call_title[l + 3])
                                                     InlineKeyboardMarkup.row(button1, button2, button3, button4)
 
-                                bot.send_message(message.chat.id, text='Заявки сотрудника' + list_empl[0], parse_mode="HTML",
+                                bot.send_message(message.chat.id, text='Заявки сотрудника: ' + list_empl[0], parse_mode="HTML",
                                                  reply_markup=InlineKeyboardMarkup)
 
                                 bot.send_message(message.chat.id, text='Закончил вывод заявок!', parse_mode="HTML",
