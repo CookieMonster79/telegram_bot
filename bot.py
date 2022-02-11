@@ -320,6 +320,9 @@ def bot_message(message):
                                 bot.send_message(message.chat.id, text=list_empl[i], parse_mode="HTML",
                                                  reply_markup=InlineMarkup)
 
+                            bot.send_message(message.chat.id, text='Вывели все заявки!', parse_mode="HTML",
+                                             reply_markup=markupKeybord)
+
                             #Возвращаем файл как было
                             new_data2 = new_data.replace(user_text, 'Иванов')
                             with open('Groovy Script/SClistEmpl.groovy', 'w', encoding="utf-8") as f:
