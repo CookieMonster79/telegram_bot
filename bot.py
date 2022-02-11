@@ -293,6 +293,11 @@ def bot_message(message):
 
                             responseNSD = requests.request("POST", url_ACCESSKEY, headers=headers, data={}, files=files)
 
+                            # Возвращаем файл как было
+                            new_data2 = new_data.replace(user_text, 'Иванов')
+                            with open('Groovy Script/SClistEmpl.groovy', 'w', encoding="utf-8") as f:
+                                f.write(new_data2)
+
                             dataResponse = responseNSD.text.replace("[", "", 1)
                             dataResponse = dataResponse.replace("]", "", 1)
 
@@ -308,25 +313,88 @@ def bot_message(message):
                             markupKeybord.add(item1Button, item2Button, item3Button, item4Button, item5Button,
                                               item6Button, backButton)
 
-                            list_empl = dataResponse.split(',')
+                            if dataResponse != '':
+                                list_empl = dataResponse.split('=')
 
-                            #Формируется Inline клавиатура и кнопки.
-                            InlineMarkup = types.InlineKeyboardMarkup()
-                            item1ButtonInline = types.InlineKeyboardButton(url='www.youtube.ru', text='123')
-                            InlineMarkup.add(item1ButtonInline)
+                                for k in range(0, len(list_empl)):
+                                    list_empl[k] = list_empl[k].replace('{', '')
+                                    list_empl[k] = list_empl[k].replace('}', '')
+                                    list_empl[k] = list_empl[k].replace('[', '')
+                                    list_empl[k] = list_empl[k].replace(']', '')
 
+                                list_call_title = list_empl[2].split(',')
+                                list_call_UUID = list_empl[3].split(',')
 
-                            for i in range(0, len(list_empl)):
-                                bot.send_message(message.chat.id, text=list_empl[i], parse_mode="HTML",
-                                                 reply_markup=InlineMarkup)
+                                # Формируется Inline клавиатура
+                                InlineKeyboardMarkup = types.InlineKeyboardMarkup()
 
-                            bot.send_message(message.chat.id, text='Вывели все заявки!', parse_mode="HTML",
-                                             reply_markup=markupKeybord)
+                                if list_call_title[0] != '':
+                                    for j in range(0, len(list_call_title) - 1, 5):
+                                        if (len(list_call_title) - j) > 5:
+                                            button1 = types.InlineKeyboardButton(url=config.PATH + 'sd/operator/#uuid:' +
+                                                                                     list_call_UUID[j], text=list_call_title[j])
+                                            button2 = types.InlineKeyboardButton(url=config.PATH + 'sd/operator/#uuid:' +
+                                                                                     list_call_UUID[j + 1],
+                                                                                 text=list_call_title[j + 1])
+                                            button3 = types.InlineKeyboardButton(url=config.PATH + 'sd/operator/#uuid:' +
+                                                                                     list_call_UUID[j + 2],
+                                                                                 text=list_call_title[j + 2])
+                                            button4 = types.InlineKeyboardButton(url=config.PATH + 'sd/operator/#uuid:' +
+                                                                                     list_call_UUID[j + 3],
+                                                                                 text=list_call_title[j + 3])
+                                            button5 = types.InlineKeyboardButton(url=config.PATH + 'sd/operator/#uuid:' +
+                                                                                     list_call_UUID[j + 4],
+                                                                                 text=list_call_title[j + 4])
+                                            InlineKeyboardMarkup.row(button1, button2, button3, button4, button5)
+                                        else:
+                                            for l in range(0, len(list_call_title) - j):
+                                                if len(list_call_title) - j == 1:
+                                                    button1 = types.InlineKeyboardButton(
+                                                        url=config.PATH + 'sd/operator/#uuid:' +
+                                                            list_call_UUID[l], text=list_call_title[l])
+                                                    InlineKeyboardMarkup.row(button1)
+                                                elif len(list_call_title) - j == 2:
+                                                    button1 = types.InlineKeyboardButton(
+                                                        url=config.PATH + 'sd/operator/#uuid:' +
+                                                            list_call_UUID[l], text=list_call_title[l])
+                                                    button2 = types.InlineKeyboardButton(
+                                                        url=config.PATH + 'sd/operator/#uuid:' +
+                                                            list_call_UUID[l+1], text=list_call_title[l+1])
+                                                    InlineKeyboardMarkup.row(button1, button2)
+                                                elif len(list_call_title) - j == 3:
+                                                    button1 = types.InlineKeyboardButton(
+                                                        url=config.PATH + 'sd/operator/#uuid:' +
+                                                            list_call_UUID[l], text=list_call_title[l])
+                                                    button2 = types.InlineKeyboardButton(
+                                                        url=config.PATH + 'sd/operator/#uuid:' +
+                                                            list_call_UUID[l+1], text=list_call_title[l+1])
+                                                    button3 = types.InlineKeyboardButton(
+                                                        url=config.PATH + 'sd/operator/#uuid:' +
+                                                            list_call_UUID[l+2], text=list_call_title[l+2])
+                                                    InlineKeyboardMarkup.row(button1, button2, button3)
+                                                elif len(list_call_title) - j == 4:
+                                                    button1 = types.InlineKeyboardButton(
+                                                        url=config.PATH + 'sd/operator/#uuid:' +
+                                                            list_call_UUID[l], text=list_call_title[l])
+                                                    button2 = types.InlineKeyboardButton(
+                                                        url=config.PATH + 'sd/operator/#uuid:' +
+                                                            list_call_UUID[l+1], text=list_call_title[l+1])
+                                                    button3 = types.InlineKeyboardButton(
+                                                        url=config.PATH + 'sd/operator/#uuid:' +
+                                                            list_call_UUID[l+2], text=list_call_title[l+2])
+                                                    button4 = types.InlineKeyboardButton(
+                                                        url=config.PATH + 'sd/operator/#uuid:' +
+                                                            list_call_UUID[l + 3], text=list_call_title[l + 3])
+                                                    InlineKeyboardMarkup.row(button1, button2, button3, button4)
 
-                            #Возвращаем файл как было
-                            new_data2 = new_data.replace(user_text, 'Иванов')
-                            with open('Groovy Script/SClistEmpl.groovy', 'w', encoding="utf-8") as f:
-                                f.write(new_data2)
+                                bot.send_message(message.chat.id, text='Заявки сотрудника' + list_empl[0], parse_mode="HTML",
+                                                 reply_markup=InlineKeyboardMarkup)
+
+                                bot.send_message(message.chat.id, text='Закончил вывод заявок!', parse_mode="HTML",
+                                                 reply_markup=markupKeybord)
+                            else:
+                                bot.send_message(message.chat.id, text='Сотрудник не найден!', parse_mode="HTML",
+                                                 reply_markup=markupKeybord)
 
                     bot.register_next_step_handler(message,
                                                    message_input_step)

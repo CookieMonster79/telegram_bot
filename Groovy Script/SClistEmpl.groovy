@@ -1,4 +1,4 @@
-def mass = loginForEmpl("Фадеев")
+def mass = loginForEmpl("Иванов")
 
 def loginForEmpl(names){
     keys=[:]
@@ -19,3 +19,4 @@ def loginForEmpl(names){
     }
     keys
 }
+
