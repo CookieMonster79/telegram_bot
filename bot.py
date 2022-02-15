@@ -462,14 +462,12 @@ def bot_message(message):
                             scheduler.add_job(bot.send_message, trigger='cron', hour='10', minute='00',
                                               args=[message.chat.id, approvedDate()])
                             scheduler.start()
+                            bot.send_message(message.chat.id, 'Успешно запустили планировщик 😎', reply_markup=markup)
+                        else:
+                            bot.send_message(message.chat.id, 'Планировщик уже запущен 😋', reply_markup=markup)
 
                     thread = Thread(target=run())
                     thread.start()
-
-                    if scheduler.state != 1:
-                        bot.send_message(message.chat.id, 'Планировщик уже запущен 😋', reply_markup=markup)
-                    else:
-                        bot.send_message(message.chat.id, 'Успешно запустили планировщик 😎', reply_markup=markup)
 
                 except:
                     bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
