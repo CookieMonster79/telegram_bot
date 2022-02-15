@@ -449,6 +449,31 @@ def bot_message(message):
                 except:
                     bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
+            elif message.text == '📍 Запуск планировщика':
+                try:
+                    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+                    item2 = types.KeyboardButton('📍 Запуск планировщика')
+                    item3 = types.KeyboardButton('🗒️ Все даты')
+                    back = types.KeyboardButton('◀ Назад')
+                    markup.add(item2, item3, back)
+
+                    def run():
+                        if scheduler.state != 1:
+                            scheduler.add_job(bot.send_message, trigger='cron', hour='10', minute='00',
+                                              args=[message.chat.id, approvedDate()])
+                            scheduler.start()
+
+                    thread = Thread(target=run())
+                    thread.start()
+
+                    if scheduler.state != 1:
+                        bot.send_message(message.chat.id, 'Планировщик уже запущен 😋', reply_markup=markup)
+                    else:
+                        bot.send_message(message.chat.id, 'Успешно запустили планировщик 😎', reply_markup=markup)
+
+                except:
+                    bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
+
             elif message.text == '🗒️ Все даты':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
                 item2 = types.KeyboardButton('📍 Запуск планировщика')
