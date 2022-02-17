@@ -329,8 +329,12 @@ def bot_message(message):
                                     list_empl[k] = list_empl[k].replace('[', '')
                                     list_empl[k] = list_empl[k].replace(']', '')
 
-                                list_call_title = list_empl[2].split(',')[0:-1]
-                                list_call_UUID = list_empl[3].split(',')[0:-1]
+                                list_call_title = list_empl[2].split(',')
+                                list_call_UUID = list_empl[3].split(',')
+                                if list_call_title[-1] == ' UUID':
+                                    list_call_title = list_call_title[0:-1]
+                                elif list_call_UUID[-1].isalpha():
+                                    list_call_UUID = list_call_UUID[0:-1]
 
                                 # Формируется Inline клавиатура
                                 InlineKeyboardMarkup = types.InlineKeyboardMarkup()
@@ -338,6 +342,7 @@ def bot_message(message):
                                 if list_call_title[0] != '':
                                     len_call_final = len(list_call_title) % 5
                                     len_call_base = len(list_call_title) - len_call_final
+                                    # Итерируемся по размерности заявок кратное 5 (если 10, то 2 раза)
                                     for j in range(0, len_call_base - 1, 5):
                                         if (len(list_call_title) - j) > 5:
                                             button1 = types.InlineKeyboardButton(
@@ -360,8 +365,9 @@ def bot_message(message):
                                                     list_call_UUID[j + 4],
                                                 text=list_call_title[j + 4])
                                             InlineKeyboardMarkup.row(button1, button2, button3, button4, button5)
+                                    #Итерируемся один раз для вывода остатка полученных заявок
                                     if len_call_final != 0:
-                                        for l in range(0, len_call_final):
+                                        for l in range(0, 1):
                                             if len_call_final == 1:
 
                                                 button1 = types.InlineKeyboardButton(
