@@ -329,14 +329,16 @@ def bot_message(message):
                                     list_empl[k] = list_empl[k].replace('[', '')
                                     list_empl[k] = list_empl[k].replace(']', '')
 
-                                list_call_title = list_empl[2].split(',')
-                                list_call_UUID = list_empl[3].split(',')
+                                list_call_title = list_empl[2].split(',')[0:-1]
+                                list_call_UUID = list_empl[3].split(',')[0:-1]
 
                                 # Формируется Inline клавиатура
                                 InlineKeyboardMarkup = types.InlineKeyboardMarkup()
 
                                 if list_call_title[0] != '':
-                                    for j in range(0, len(list_call_title) - 1, 5):
+                                    len_call_final = len(list_call_title) % 5
+                                    len_call_base = len(list_call_title) - len_call_final
+                                    for j in range(0, len_call_base - 1, 5):
                                         if (len(list_call_title) - j) > 5:
                                             button1 = types.InlineKeyboardButton(
                                                 url=config.PATH + 'sd/operator/#uuid:' +
@@ -358,46 +360,51 @@ def bot_message(message):
                                                     list_call_UUID[j + 4],
                                                 text=list_call_title[j + 4])
                                             InlineKeyboardMarkup.row(button1, button2, button3, button4, button5)
-                                        else:
-                                            for l in range(0, len(list_call_title) - j):
-                                                if len(list_call_title) - j == 1:
-                                                    button1 = types.InlineKeyboardButton(
-                                                        url=config.PATH + 'sd/operator/#uuid:' +
-                                                            list_call_UUID[l], text=list_call_title[l])
-                                                    InlineKeyboardMarkup.row(button1)
-                                                elif len(list_call_title) - j == 2:
-                                                    button1 = types.InlineKeyboardButton(
-                                                        url=config.PATH + 'sd/operator/#uuid:' +
-                                                            list_call_UUID[l], text=list_call_title[l])
-                                                    button2 = types.InlineKeyboardButton(
-                                                        url=config.PATH + 'sd/operator/#uuid:' +
-                                                            list_call_UUID[l + 1], text=list_call_title[l + 1])
-                                                    InlineKeyboardMarkup.row(button1, button2)
-                                                elif len(list_call_title) - j == 3:
-                                                    button1 = types.InlineKeyboardButton(
-                                                        url=config.PATH + 'sd/operator/#uuid:' +
-                                                            list_call_UUID[l], text=list_call_title[l])
-                                                    button2 = types.InlineKeyboardButton(
-                                                        url=config.PATH + 'sd/operator/#uuid:' +
-                                                            list_call_UUID[l + 1], text=list_call_title[l + 1])
-                                                    button3 = types.InlineKeyboardButton(
-                                                        url=config.PATH + 'sd/operator/#uuid:' +
-                                                            list_call_UUID[l + 2], text=list_call_title[l + 2])
-                                                    InlineKeyboardMarkup.row(button1, button2, button3)
-                                                elif len(list_call_title) - j == 4:
-                                                    button1 = types.InlineKeyboardButton(
-                                                        url=config.PATH + 'sd/operator/#uuid:' +
-                                                            list_call_UUID[l], text=list_call_title[l])
-                                                    button2 = types.InlineKeyboardButton(
-                                                        url=config.PATH + 'sd/operator/#uuid:' +
-                                                            list_call_UUID[l + 1], text=list_call_title[l + 1])
-                                                    button3 = types.InlineKeyboardButton(
-                                                        url=config.PATH + 'sd/operator/#uuid:' +
-                                                            list_call_UUID[l + 2], text=list_call_title[l + 2])
-                                                    button4 = types.InlineKeyboardButton(
-                                                        url=config.PATH + 'sd/operator/#uuid:' +
-                                                            list_call_UUID[l + 3], text=list_call_title[l + 3])
-                                                    InlineKeyboardMarkup.row(button1, button2, button3, button4)
+                                    if len_call_final != 0:
+                                        for l in range(0, len_call_final):
+                                            if len_call_final == 1:
+
+                                                button1 = types.InlineKeyboardButton(
+                                                    url=config.PATH + 'sd/operator/#uuid:' +
+                                                        list_call_UUID[len_call_base + l], text=list_call_title[len_call_base + l])
+                                                InlineKeyboardMarkup.row(button1)
+                                            elif len_call_final == 2:
+
+                                                button1 = types.InlineKeyboardButton(
+                                                    url=config.PATH + 'sd/operator/#uuid:' +
+                                                        list_call_UUID[len_call_base + l], text=list_call_title[len_call_base + l])
+                                                button2 = types.InlineKeyboardButton(
+                                                    url=config.PATH + 'sd/operator/#uuid:' +
+                                                        list_call_UUID[len_call_base + l + 1], text=list_call_title[len_call_base + l + 1])
+                                                InlineKeyboardMarkup.row(button1, button2)
+                                            elif len_call_final == 3:
+
+                                                button1 = types.InlineKeyboardButton(
+                                                    url=config.PATH + 'sd/operator/#uuid:' +
+                                                        list_call_UUID[len_call_base + l], text=list_call_title[len_call_base + l])
+                                                button2 = types.InlineKeyboardButton(
+                                                    url=config.PATH + 'sd/operator/#uuid:' +
+                                                        list_call_UUID[len_call_base + l + 1], text=list_call_title[len_call_base + l + 1])
+                                                button3 = types.InlineKeyboardButton(
+                                                    url=config.PATH + 'sd/operator/#uuid:' +
+                                                        list_call_UUID[len_call_base + l + 2], text=list_call_title[len_call_base + l + 2])
+                                                InlineKeyboardMarkup.row(button1, button2, button3)
+                                            elif len_call_final == 4:
+
+                                                button1 = types.InlineKeyboardButton(
+                                                    url=config.PATH + 'sd/operator/#uuid:' +
+                                                        list_call_UUID[len_call_base + l], text=list_call_title[len_call_base + l])
+                                                button2 = types.InlineKeyboardButton(
+                                                    url=config.PATH + 'sd/operator/#uuid:' +
+                                                        list_call_UUID[len_call_base + l + 1], text=list_call_title[len_call_base + l + 1])
+                                                button3 = types.InlineKeyboardButton(
+                                                    url=config.PATH + 'sd/operator/#uuid:' +
+                                                        list_call_UUID[len_call_base + l + 2], text=list_call_title[len_call_base + l + 2])
+                                                button4 = types.InlineKeyboardButton(
+                                                    url=config.PATH + 'sd/operator/#uuid:' +
+                                                        list_call_UUID[len_call_base + l + 3], text=list_call_title[len_call_base + l + 3])
+                                                InlineKeyboardMarkup.row(button1, button2, button3, button4)
+
 
                                 bot.send_message(message.chat.id, text='Заявки сотрудника: ' + list_empl[0],
                                                  parse_mode="HTML",
