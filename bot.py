@@ -497,8 +497,8 @@ def bot_message(message):
 
                     for row in rows:
                         bot.send_message(message.chat.id, parse_mode="HTML",
-                                         text="Описание: " + row[0] + "<pre>\n</pre> Год рождения: " +
-                                              row[1] + "День и месяц: " + row[2])
+                                         text= row[0] + "\nДата: " + row[2] + "-" +
+                                              row[1])
 
                     con.close()
 
