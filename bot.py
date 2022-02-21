@@ -18,6 +18,16 @@ bot = telebot.TeleBot(config.TOKEN)
 list_user = ['moskva_max', 'Sa_Mosk']
 
 
+def run(message, markup):
+    if scheduler.state != 1:
+        scheduler.add_job(bot.send_message, trigger='cron', day_of_week='mon-fri', hour='10', minute='00',
+                          args=[message.chat.id, approvedDate()])
+        scheduler.start()
+        bot.send_message(message.chat.id, 'Успешно запустили планировщик 😎', reply_markup=markup)
+    else:
+        bot.send_message(message.chat.id, 'Планировщик уже запущен 😋', reply_markup=markup)
+
+
 def approvedDate():
     """
     Проверяет есть ли сегодня у кого-нибудь день рождение
@@ -61,16 +71,7 @@ def start_command(message):
 
     markup.add(item1, item2, item3, item4)
 
-    def run():
-        if scheduler.state != 1:
-            scheduler.add_job(bot.send_message, trigger='cron', hour='10', minute='00',
-                              args=[message.chat.id, approvedDate()])
-            scheduler.start()
-            bot.send_message(message.chat.id, 'Успешно запустили планировщик 😎', reply_markup=markup)
-        else:
-            bot.send_message(message.chat.id, 'Планировщик уже запущен 😋', reply_markup=markup)
-
-    thread = Thread(target=run())
+    thread = Thread(target=run(message, markup))
     thread.start()
 
     bot.send_message(message.chat.id,
@@ -473,16 +474,7 @@ def bot_message(message):
                     back = types.KeyboardButton('◀ Назад')
                     markup.add(item2, item3, back)
 
-                    def run():
-                        if scheduler.state != 1:
-                            scheduler.add_job(bot.send_message, trigger='cron', hour='10', minute='00',
-                                              args=[message.chat.id, approvedDate()])
-                            scheduler.start()
-                            bot.send_message(message.chat.id, 'Успешно запустили планировщик 😎', reply_markup=markup)
-                        else:
-                            bot.send_message(message.chat.id, 'Планировщик уже запущен 😋', reply_markup=markup)
-
-                    thread = Thread(target=run())
+                    thread = Thread(target=run(message, markup))
                     thread.start()
 
                 except:
