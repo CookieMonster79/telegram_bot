@@ -97,21 +97,11 @@ scheduler = BackgroundScheduler({'apscheduler.timezone': 'Europe/Moscow'})
 
 @bot.message_handler(content_types=['text'])
 def bot_message(message):
-    e = 0
     if message.chat.username in list_user:
         if message.chat.type == 'private':
 
             if message.text == '🎇 Рандомное число':
                 bot.send_message(message.chat.id, 'Ваше число: ' + str(random.randint(0, 100)))
-
-            elif message.text == '🔮 Узнаем погоду':
-                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                item1 = types.KeyboardButton('🏤 Москва')
-                item2 = types.KeyboardButton('🚣 Санкт-Петербург')
-                back = types.KeyboardButton('◀ Назад')
-                markup.add(item1, item2, back)
-
-                bot.send_message(message.chat.id, '🔮 Узнаем погоду', reply_markup=markup)
 
             elif message.text == '🍩 ITSM365':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -159,7 +149,6 @@ def bot_message(message):
                     bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
             elif message.text == '📦 Стат. по клиентам':
-
                 try:
                     url = f"{config.PATH}sd/services/rest/exec?accessKey={config.ACCESSKEY}"
 
@@ -253,7 +242,7 @@ def bot_message(message):
                             item2Button = types.KeyboardButton('📦 Заявок сегодня')
                             item3Button = types.KeyboardButton('📦 Стат. по клиентам')
                             item4Button = types.KeyboardButton('📦 Войти под ...')
-                            item5Button = types.KeyboardButton('📦 Ещё одно 3')
+                            item5Button = types.KeyboardButton('🚪 Проверить заявки')
                             item6Button = types.KeyboardButton('📦 Ещё одно 4')
                             backButton: KeyboardButton = types.KeyboardButton('◀ Назад')
                             markupKeybord.add(item1Button, item2Button, item3Button, item4Button, item5Button,
@@ -301,7 +290,7 @@ def bot_message(message):
 
                             responseNSD = requests.request("POST", url_ACCESSKEY, headers=headers, data={}, files=files)
 
-                            # Возвращаем файл как было
+                            # Возвращаем Фамилию в файле, как было
                             new_data2 = new_data.replace(user_text, 'Иванов')
                             with open('Groovy Script/SClistEmpl.groovy', 'w', encoding="utf-8") as f:
                                 f.write(new_data2)
@@ -351,67 +340,72 @@ def bot_message(message):
                                                     list_call_UUID[j], text=list_call_title[j])
                                             button2 = types.InlineKeyboardButton(
                                                 url=config.PATH + 'sd/operator/#uuid:' +
-                                                    list_call_UUID[j + 1],
-                                                text=list_call_title[j + 1])
+                                                    list_call_UUID[j + 1], text=list_call_title[j + 1])
                                             button3 = types.InlineKeyboardButton(
                                                 url=config.PATH + 'sd/operator/#uuid:' +
-                                                    list_call_UUID[j + 2],
-                                                text=list_call_title[j + 2])
+                                                    list_call_UUID[j + 2], text=list_call_title[j + 2])
                                             button4 = types.InlineKeyboardButton(
                                                 url=config.PATH + 'sd/operator/#uuid:' +
-                                                    list_call_UUID[j + 3],
-                                                text=list_call_title[j + 3])
+                                                    list_call_UUID[j + 3], text=list_call_title[j + 3])
                                             button5 = types.InlineKeyboardButton(
                                                 url=config.PATH + 'sd/operator/#uuid:' +
-                                                    list_call_UUID[j + 4],
-                                                text=list_call_title[j + 4])
+                                                    list_call_UUID[j + 4], text=list_call_title[j + 4])
                                             InlineKeyboardMarkup.row(button1, button2, button3, button4, button5)
-                                    #Итерируемся один раз для вывода остатка полученных заявок
+                                    # Итерируемся один раз для вывода остатка полученных заявок
                                     if len_call_final != 0:
                                         for l in range(0, 1):
                                             if len_call_final == 1:
 
                                                 button1 = types.InlineKeyboardButton(
                                                     url=config.PATH + 'sd/operator/#uuid:' +
-                                                        list_call_UUID[len_call_base + l], text=list_call_title[len_call_base + l])
+                                                        list_call_UUID[len_call_base + l],
+                                                    text=list_call_title[len_call_base + l])
                                                 InlineKeyboardMarkup.row(button1)
                                             elif len_call_final == 2:
 
                                                 button1 = types.InlineKeyboardButton(
                                                     url=config.PATH + 'sd/operator/#uuid:' +
-                                                        list_call_UUID[len_call_base + l], text=list_call_title[len_call_base + l])
+                                                        list_call_UUID[len_call_base + l],
+                                                    text=list_call_title[len_call_base + l])
                                                 button2 = types.InlineKeyboardButton(
                                                     url=config.PATH + 'sd/operator/#uuid:' +
-                                                        list_call_UUID[len_call_base + l + 1], text=list_call_title[len_call_base + l + 1])
+                                                        list_call_UUID[len_call_base + l + 1],
+                                                    text=list_call_title[len_call_base + l + 1])
                                                 InlineKeyboardMarkup.row(button1, button2)
                                             elif len_call_final == 3:
 
                                                 button1 = types.InlineKeyboardButton(
                                                     url=config.PATH + 'sd/operator/#uuid:' +
-                                                        list_call_UUID[len_call_base + l], text=list_call_title[len_call_base + l])
+                                                        list_call_UUID[len_call_base + l],
+                                                    text=list_call_title[len_call_base + l])
                                                 button2 = types.InlineKeyboardButton(
                                                     url=config.PATH + 'sd/operator/#uuid:' +
-                                                        list_call_UUID[len_call_base + l + 1], text=list_call_title[len_call_base + l + 1])
+                                                        list_call_UUID[len_call_base + l + 1],
+                                                    text=list_call_title[len_call_base + l + 1])
                                                 button3 = types.InlineKeyboardButton(
                                                     url=config.PATH + 'sd/operator/#uuid:' +
-                                                        list_call_UUID[len_call_base + l + 2], text=list_call_title[len_call_base + l + 2])
+                                                        list_call_UUID[len_call_base + l + 2],
+                                                    text=list_call_title[len_call_base + l + 2])
                                                 InlineKeyboardMarkup.row(button1, button2, button3)
                                             elif len_call_final == 4:
 
                                                 button1 = types.InlineKeyboardButton(
                                                     url=config.PATH + 'sd/operator/#uuid:' +
-                                                        list_call_UUID[len_call_base + l], text=list_call_title[len_call_base + l])
+                                                        list_call_UUID[len_call_base + l],
+                                                    text=list_call_title[len_call_base + l])
                                                 button2 = types.InlineKeyboardButton(
                                                     url=config.PATH + 'sd/operator/#uuid:' +
-                                                        list_call_UUID[len_call_base + l + 1], text=list_call_title[len_call_base + l + 1])
+                                                        list_call_UUID[len_call_base + l + 1],
+                                                    text=list_call_title[len_call_base + l + 1])
                                                 button3 = types.InlineKeyboardButton(
                                                     url=config.PATH + 'sd/operator/#uuid:' +
-                                                        list_call_UUID[len_call_base + l + 2], text=list_call_title[len_call_base + l + 2])
+                                                        list_call_UUID[len_call_base + l + 2],
+                                                    text=list_call_title[len_call_base + l + 2])
                                                 button4 = types.InlineKeyboardButton(
                                                     url=config.PATH + 'sd/operator/#uuid:' +
-                                                        list_call_UUID[len_call_base + l + 3], text=list_call_title[len_call_base + l + 3])
+                                                        list_call_UUID[len_call_base + l + 3],
+                                                    text=list_call_title[len_call_base + l + 3])
                                                 InlineKeyboardMarkup.row(button1, button2, button3, button4)
-
 
                                 bot.send_message(message.chat.id, text='Заявки сотрудника: ' + list_empl[0],
                                                  parse_mode="HTML",
@@ -438,20 +432,6 @@ def bot_message(message):
                 markup.add(item1, item3, back)
 
                 bot.send_message(message.chat.id, '🔱 Другое', reply_markup=markup)
-
-            elif message.text == '◀ Назад':
-                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                item1 = types.KeyboardButton('🎇 Рандомное число')
-                item2 = types.KeyboardButton('🔮 Узнаем погоду')
-                item3 = types.KeyboardButton('🍩 ITSM365')
-                item4 = types.KeyboardButton('🔱 Другое')
-
-                markup.add(item1, item2, item3, item4)
-
-                bot.send_message(message.chat.id,
-                                 '◀ Назад',
-                                 reply_markup=markup
-                                 )
 
             elif message.text == '🛠️ Настройка напоминаний':
                 try:
@@ -502,7 +482,7 @@ def bot_message(message):
 
                     for row in rows:
                         bot.send_message(message.chat.id, parse_mode="HTML",
-                                         text= row[0] + "\nДата: " + row[2] + "-" +
+                                         text=row[0] + "\nДата: " + row[2] + "-" +
                                               row[1])
 
                     con.close()
@@ -535,6 +515,17 @@ def bot_message(message):
 
                 except:
                     bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
+
+            elif message.text == '🔮 Узнаем погоду':
+                '''Переписать города под Inline-кнопки'''
+
+                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+                item1 = types.KeyboardButton('🏤 Москва')
+                item2 = types.KeyboardButton('🚣 Санкт-Петербург')
+                back = types.KeyboardButton('◀ Назад')
+                markup.add(item1, item2, back)
+
+                bot.send_message(message.chat.id, '🔮 Узнаем погоду', reply_markup=markup)
 
             elif message.text == '🏤 Москва':
                 try:
@@ -577,6 +568,18 @@ def bot_message(message):
 
                 except:
                     bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
+
+            elif message.text == '◀ Назад':
+                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+                item1 = types.KeyboardButton('🎇 Рандомное число')
+                item2 = types.KeyboardButton('🔮 Узнаем погоду')
+                item3 = types.KeyboardButton('🍩 ITSM365')
+                item4 = types.KeyboardButton('🔱 Другое')
+
+                markup.add(item1, item2, item3, item4)
+
+                bot.send_message(message.chat.id, '◀ Назад', reply_markup=markup)
+
 
     else:
         bot.send_message(message.chat.id, message.text)
