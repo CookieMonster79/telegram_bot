@@ -411,8 +411,10 @@ def bot_message(message):
                                                  parse_mode="HTML",
                                                  reply_markup=InlineKeyboardMarkup)
 
-                                bot.send_message(message.chat.id, text='Закончил вывод заявок!', parse_mode="HTML",
-                                                 reply_markup=markupKeybord)
+                                bot.edit_message_reply_markup(message.chat.id, text='Закончил вывод заявок!',
+                                                              parse_mode="HTML",
+                                                              reply_markup=markupKeybord)
+
                             else:
                                 bot.send_message(message.chat.id, text='Сотрудник не найден!', parse_mode="HTML",
                                                  reply_markup=markupKeybord)
