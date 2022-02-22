@@ -109,7 +109,7 @@ def bot_message(message):
                 item2 = types.KeyboardButton('📦 Заявок сегодня')
                 item3 = types.KeyboardButton('📦 Стат. по клиентам')
                 item4 = types.KeyboardButton('📦 Войти под ...')
-                item5 = types.KeyboardButton('🚪 Проверить заявки')
+                item5 = types.KeyboardButton('🚪 Заявки сотрудника')
                 item6 = types.KeyboardButton('📦 Ещё одно 4')
                 back = types.KeyboardButton('◀ Назад')
                 markup.add(item1, item2, item3, item4, item5, item6, back)
@@ -242,7 +242,7 @@ def bot_message(message):
                             item2Button = types.KeyboardButton('📦 Заявок сегодня')
                             item3Button = types.KeyboardButton('📦 Стат. по клиентам')
                             item4Button = types.KeyboardButton('📦 Войти под ...')
-                            item5Button = types.KeyboardButton('🚪 Проверить заявки')
+                            item5Button = types.KeyboardButton('🚪 Заявки сотрудника')
                             item6Button = types.KeyboardButton('📦 Ещё одно 4')
                             backButton: KeyboardButton = types.KeyboardButton('◀ Назад')
                             markupKeybord.add(item1Button, item2Button, item3Button, item4Button, item5Button,
@@ -251,6 +251,7 @@ def bot_message(message):
                             bot.send_message(message.chat.id, text=dataResponse, parse_mode="HTML",
                                              reply_markup=markupKeybord)
 
+                            #Меняем обратно значение в файле для правильного последующего использования
                             new_data2 = new_data.replace(user_text, 'Иванов')
                             with open('Groovy Script/loginForEmpl.groovy', 'w', encoding="utf-8") as f:
                                 f.write(new_data2)
@@ -261,7 +262,7 @@ def bot_message(message):
                 except:
                     bot.send_message(message.chat.id, 'Что-то пошло не по плану :(')
 
-            elif message.text == '🚪 Проверить заявки':
+            elif message.text == '🚪 Заявки сотрудника':
                 try:
                     markup = types.ForceReply(selective=False)
                     bot.send_message(message.chat.id, f"Введите Фамилию, типа Петров", reply_markup=markup);
@@ -303,7 +304,7 @@ def bot_message(message):
                             item2Button = types.KeyboardButton('📦 Заявок сегодня')
                             item3Button = types.KeyboardButton('📦 Стат. по клиентам')
                             item4Button = types.KeyboardButton('📦 Войти под ...')
-                            item5Button = types.KeyboardButton('🚪 Проверить заявки')
+                            item5Button = types.KeyboardButton('🚪 Заявки сотрудника')
                             item6Button = types.KeyboardButton('📦 Ещё одно 4')
                             backButton: KeyboardButton = types.KeyboardButton('◀ Назад')
 
@@ -411,10 +412,8 @@ def bot_message(message):
                                                  parse_mode="HTML",
                                                  reply_markup=InlineKeyboardMarkup)
 
-                                bot.edit_message_reply_markup(message.chat.id, text='Закончил вывод заявок!',
-                                                              parse_mode="HTML",
-                                                              reply_markup=markupKeybord)
-
+                                bot.send_message(message.chat.id, text='Закончил вывод заявок!', parse_mode="HTML",
+                                                 reply_markup=markupKeybord)
                             else:
                                 bot.send_message(message.chat.id, text='Сотрудник не найден!', parse_mode="HTML",
                                                  reply_markup=markupKeybord)
@@ -425,6 +424,36 @@ def bot_message(message):
                     # добавляем следующий шаг, перенаправляющий пользователя на message_input_step
                 except:
                     bot.send_message(message.chat.id, 'Что-то пошло не по плану :(')
+
+            elif message.text == '📦 Ещё одно 4':
+                try:
+                    with open('Groovy Script/infoForCall.groovy', 'r', encoding="utf-8") as f:
+                        old_data = f.read()
+
+                    new_data = old_data.replace('1000', '5708')
+
+                    with open('Groovy Script/infoForCall.groovy', 'w', encoding="utf-8") as f:
+                        f.write(new_data)
+
+                    url_ACCESSKEY = f"{config.PATH}sd/services/rest/exec?accessKey={config.ACCESSKEY}"
+
+                    files = [
+                        ('script', ('infoForCall.groovy', open('Groovy Script/infoForCall.groovy', 'rb'),
+                                    'application/octet-stream'))
+                    ]
+                    headers = config.headers
+
+                    responseNSD = requests.request("POST", url_ACCESSKEY, headers=headers, data={}, files=files)
+
+                    dataResponse = responseNSD.text
+
+                    bot.send_message(message.chat.id, text=dataResponse, parse_mode="HTML")
+
+                    new_data2 = new_data.replace('5708', '1000')
+                    with open('Groovy Script/infoForCall.groovy', 'w', encoding="utf-8") as f:
+                        f.write(new_data2)
+                except:
+                    bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
             elif message.text == '🔱 Другое':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
