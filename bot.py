@@ -6,7 +6,7 @@ import prettytable as pt
 import psycopg2
 import requests
 import telebot
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.background import BlockingScheduler
 from telebot import types
 from telebot.types import KeyboardButton
 
@@ -20,7 +20,7 @@ list_user = ['moskva_max', 'Sa_Mosk']
 
 def run(message, markup):
     if scheduler.state != 1:
-        scheduler.add_job(bot.send_message, trigger='cron', day_of_week='mon-fri', hour='10', minute='00',
+        scheduler.add_job(bot.send_message, trigger='cron', day_of_week='mon-fri', hour='13', minute='30',
                           args=[message.chat.id, approvedDate()])
         scheduler.start()
         bot.send_message(message.chat.id, 'Успешно запустили планировщик 😎', reply_markup=markup)
@@ -92,7 +92,7 @@ def toFixed(numObj, digits=0):
     return f"{numObj:.{digits}f}"
 
 
-scheduler = BackgroundScheduler({'apscheduler.timezone': 'Europe/Moscow'})
+scheduler = BlockingScheduler({'apscheduler.timezone': 'Europe/Moscow'})
 
 
 @bot.message_handler(content_types=['text'])
@@ -265,7 +265,7 @@ def bot_message(message):
             elif message.text == '🚪 Заявки сотрудника':
                 try:
                     markup = types.ForceReply(selective=False)
-                    bot.send_message(message.chat.id, f"Введите Фамилию, типа Петров", reply_markup=markup);
+                    bot.send_message(message.chat.id, f"Введите Фамилию, типа Петров", reply_markup=markup)
 
                     @bot.message_handler(content_types=['text'])
                     def message_input_step(message_user):
