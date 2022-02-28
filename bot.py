@@ -136,9 +136,8 @@ def bot_message(message):
                         ('script', ('countCall.groovy', open('Groovy Script/countCall.groovy', 'rb'),
                                     'application/octet-stream'))
                     ]
-                    headers = config.headers
 
-                    response = requests.request("POST", url, headers=headers, data={}, files=files)
+                    response = requests.request("POST", url, headers=config.headers, data={}, files=files)
 
                     data = response.text
 
@@ -155,9 +154,8 @@ def bot_message(message):
                         ('script', ('countCall.groovy', open('Groovy Script/tableStatisticForClient.groovy', 'rb'),
                                     'application/octet-stream'))
                     ]
-                    headers = config.headers
 
-                    response = requests.request("POST", url, headers=headers, data={}, files=files)
+                    response = requests.request("POST", url, headers=config.headers, data={}, files=files)
 
                     list = []
                     data = response.text
@@ -230,11 +228,9 @@ def bot_message(message):
                                 ('script', ('loginForEmpl.groovy', open('Groovy Script/loginForEmpl.groovy', 'rb'),
                                             'application/octet-stream'))
                             ]
-                            headers = config.headers
 
-                            responseNSD = requests.request("POST", url_ACCESSKEY, headers=headers, data={}, files=files)
-
-                            dataResponse = responseNSD.text
+                            responseNSD = requests.request("POST", url_ACCESSKEY, headers=config.headers, data={},
+                                                           files=files)
 
                             markupKeybord = types.ReplyKeyboardMarkup(resize_keyboard=True)
                             item1Button = types.KeyboardButton('🍀 Статус системы')
@@ -247,16 +243,15 @@ def bot_message(message):
                             markupKeybord.add(item1Button, item2Button, item3Button, item4Button, item5Button,
                                               item6Button, backButton)
 
-                            bot.send_message(message.chat.id, text=dataResponse, parse_mode="HTML",
+                            bot.send_message(message.chat.id, text=responseNSD.text, parse_mode="HTML",
                                              reply_markup=markupKeybord)
 
-                            #Меняем обратно значение в файле для правильного последующего использования
+                            # Меняем обратно значение в файле для правильного последующего использования
                             new_data2 = new_data.replace(user_text, 'Иванов')
                             with open('Groovy Script/loginForEmpl.groovy', 'w', encoding="utf-8") as f:
                                 f.write(new_data2)
 
-                    bot.register_next_step_handler(message,
-                                                   message_input_step)
+                    bot.register_next_step_handler(message, message_input_step)
                     # добавляем следующий шаг, перенаправляющий пользователя на message_input_step
                 except:
                     bot.send_message(message.chat.id, 'Что-то пошло не по плану :(')
@@ -286,9 +281,9 @@ def bot_message(message):
                                 ('script', ('SClistEmpl.groovy', open('Groovy Script/SClistEmpl.groovy', 'rb'),
                                             'application/octet-stream'))
                             ]
-                            headers = config.headers
 
-                            responseNSD = requests.request("POST", url_ACCESSKEY, headers=headers, data={}, files=files)
+                            responseNSD = requests.request("POST", url_ACCESSKEY, headers=config.headers, data={},
+                                                           files=files)
 
                             # Возвращаем Фамилию в файле, как было
                             new_data2 = new_data.replace(user_text, 'Иванов')
@@ -354,15 +349,15 @@ def bot_message(message):
                                     # Итерируемся один раз для вывода остатка полученных заявок
                                     if len_call_final != 0:
                                         for l in range(0, 1):
-                                            if len_call_final == 1:
 
+                                            if len_call_final == 1:
                                                 button1 = types.InlineKeyboardButton(
                                                     url=config.PATH + 'sd/operator/#uuid:' +
                                                         list_call_UUID[len_call_base + l],
                                                     text=list_call_title[len_call_base + l])
                                                 InlineKeyboardMarkup.row(button1)
-                                            elif len_call_final == 2:
 
+                                            elif len_call_final == 2:
                                                 button1 = types.InlineKeyboardButton(
                                                     url=config.PATH + 'sd/operator/#uuid:' +
                                                         list_call_UUID[len_call_base + l],
@@ -372,8 +367,8 @@ def bot_message(message):
                                                         list_call_UUID[len_call_base + l + 1],
                                                     text=list_call_title[len_call_base + l + 1])
                                                 InlineKeyboardMarkup.row(button1, button2)
-                                            elif len_call_final == 3:
 
+                                            elif len_call_final == 3:
                                                 button1 = types.InlineKeyboardButton(
                                                     url=config.PATH + 'sd/operator/#uuid:' +
                                                         list_call_UUID[len_call_base + l],
@@ -387,8 +382,8 @@ def bot_message(message):
                                                         list_call_UUID[len_call_base + l + 2],
                                                     text=list_call_title[len_call_base + l + 2])
                                                 InlineKeyboardMarkup.row(button1, button2, button3)
-                                            elif len_call_final == 4:
 
+                                            elif len_call_final == 4:
                                                 button1 = types.InlineKeyboardButton(
                                                     url=config.PATH + 'sd/operator/#uuid:' +
                                                         list_call_UUID[len_call_base + l],
@@ -417,9 +412,7 @@ def bot_message(message):
                                 bot.send_message(message.chat.id, text='Сотрудник не найден!', parse_mode="HTML",
                                                  reply_markup=markupKeybord)
 
-                    bot.register_next_step_handler(message,
-                                                   message_input_step)
-
+                    bot.register_next_step_handler(message, message_input_step)
                     # добавляем следующий шаг, перенаправляющий пользователя на message_input_step
                 except:
                     bot.send_message(message.chat.id, 'Что-то пошло не по плану :(')
@@ -457,9 +450,9 @@ def bot_message(message):
             elif message.text == '🔱 Другое':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
                 item1 = types.KeyboardButton('🛠️ Настройка напоминаний')
-                item3 = types.KeyboardButton('🗿 Стикер')
+                item2 = types.KeyboardButton('🗿 Стикер')
                 back = types.KeyboardButton('◀ Назад')
-                markup.add(item1, item3, back)
+                markup.add(item1, item2, back)
 
                 bot.send_message(message.chat.id, '🔱 Другое', reply_markup=markup)
 
@@ -477,24 +470,24 @@ def bot_message(message):
                     bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
             elif message.text == '📍 Запуск планировщика':
-                #try:
-                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                item2 = types.KeyboardButton('📍 Запуск планировщика')
-                item3 = types.KeyboardButton('🗒️ Все даты')
-                back = types.KeyboardButton('◀ Назад')
-                markup.add(item2, item3, back)
+                try:
+                    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+                    item2 = types.KeyboardButton('📍 Запуск планировщика')
+                    item3 = types.KeyboardButton('🗒️ Все даты')
+                    back = types.KeyboardButton('◀ Назад')
+                    markup.add(item2, item3, back)
 
-                run(message, markup)
+                    run(message, markup)
 
-                #except:
-                  #  bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
+                except:
+                    bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
             elif message.text == '🗒️ Все даты':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                item2 = types.KeyboardButton('📍 Запуск планировщика')
-                item3 = types.KeyboardButton('🗒️ Все даты')
+                item1 = types.KeyboardButton('📍 Запуск планировщика')
+                item2 = types.KeyboardButton('🗒️ Все даты')
                 back = types.KeyboardButton('◀ Назад')
-                markup.add(item2, item3, back)
+                markup.add(item1, item2, back)
 
                 try:
                     con = psycopg2.connect(
