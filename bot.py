@@ -20,8 +20,7 @@ list_user = ['moskva_max', 'Sa_Mosk']
 
 def run(message, markup):
     if scheduler.state != 1:
-        scheduler.add_job(bot.send_message, trigger='cron', day_of_week='mon-fri', hour='13', minute='30',
-                          args=[message.chat.id, approvedDate()])
+        scheduler.add_job(bot.send_message, trigger='cron', hour=13, minute=30, args=[message.chat.id, approvedDate()])
         scheduler.start()
         bot.send_message(message.chat.id, 'Успешно запустили планировщик 😎', reply_markup=markup)
     else:
@@ -478,18 +477,17 @@ def bot_message(message):
                     bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
             elif message.text == '📍 Запуск планировщика':
-                try:
-                    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-                    item2 = types.KeyboardButton('📍 Запуск планировщика')
-                    item3 = types.KeyboardButton('🗒️ Все даты')
-                    back = types.KeyboardButton('◀ Назад')
-                    markup.add(item2, item3, back)
+                #try:
+                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+                item2 = types.KeyboardButton('📍 Запуск планировщика')
+                item3 = types.KeyboardButton('🗒️ Все даты')
+                back = types.KeyboardButton('◀ Назад')
+                markup.add(item2, item3, back)
 
-                    thread = Thread(target=run(message, markup))
-                    thread.start()
+                run(message, markup)
 
-                except:
-                    bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
+                #except:
+                  #  bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
             elif message.text == '🗒️ Все даты':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
