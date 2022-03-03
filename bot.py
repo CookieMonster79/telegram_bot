@@ -20,7 +20,7 @@ list_user = ['moskva_max', 'Sa_Mosk']
 
 def run(message, markup):
     if scheduler.state != 1:
-        scheduler.add_job(bot.send_message, trigger='cron', hour=13, minute=30, args=[message.chat.id, approvedDate()])
+        scheduler.add_job(bot.send_message, trigger='cron', hour=13, minute=30, replace_existing=True, args=[message.chat.id, approvedDate()])
         scheduler.start()
         bot.send_message(message.chat.id, 'Успешно запустили планировщик 😎', reply_markup=markup)
     else:
