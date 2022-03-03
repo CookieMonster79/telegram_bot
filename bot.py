@@ -477,7 +477,8 @@ def bot_message(message):
                     back = types.KeyboardButton('◀ Назад')
                     markup.add(item2, item3, back)
 
-                    run(message, markup)
+                    thread = Thread(target=run(message, markup))
+                    thread.start()
 
                 except:
                     bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
