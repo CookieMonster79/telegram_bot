@@ -1,3 +1,4 @@
+import json
 import random
 from datetime import datetime
 from threading import Thread
@@ -20,7 +21,8 @@ list_user = ['moskva_max', 'Sa_Mosk']
 
 def run(message, markup):
     if scheduler.state != 1:
-        scheduler.add_job(bot.send_message, trigger='cron', hour=13, minute=30, replace_existing=True, args=[message.chat.id, approvedDate()])
+        scheduler.add_job(bot.send_message, trigger='cron', hour=13, minute=30, replace_existing=True,
+                          args=[message.chat.id, approvedDate()])
         scheduler.start()
         bot.send_message(message.chat.id, 'Успешно запустили планировщик 😎', reply_markup=markup)
     else:
@@ -66,9 +68,10 @@ def start_command(message):
     item1 = types.KeyboardButton('🎇 Рандомное число')
     item2 = types.KeyboardButton('🔮 Узнаем погоду')
     item3 = types.KeyboardButton('🍩 ITSM365')
-    item4 = types.KeyboardButton('🔱 Другое')
+    item4 = types.KeyboardButton('🌬️ Алиса')
+    item5 = types.KeyboardButton('🔱 Другое')
 
-    markup.add(item1, item2, item3, item4)
+    markup.add(item1, item2, item3, item4, item5)
 
     thread = Thread(target=run(message, markup))
     thread.start()
@@ -79,6 +82,35 @@ def start_command(message):
                      'Сейчас например запустил планировщик, теперь каждый день в 10:00 будут приходить сообщения.\n',
                      reply_markup=markup
                      )
+
+def state_dev(id_dev):
+    '''Функция получает состояние устройства если возвращается True, то включено'''
+    url = f'https://api.iot.yandex.net/v1.0/devices/{id_dev}'
+
+    payload = {}
+    headers = {
+        'Authorization': f'Bearer {config.TOKEN_YA}'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    a = json.loads(response.text.replace("'", '"'))
+
+    return a.get('capabilities')[0].get('state').get('value')
+
+
+def run_scen(id_scen):
+    '''Функция исполняет сценарий по id'''
+    url = f'https://api.iot.yandex.net/v1.0/scenarios/{id_scen}/actions'
+
+    payload = {}
+
+    headers = {
+        'Authorization': f'Bearer {config.TOKEN_YA}'
+    }
+    response = requests.request("POST", url, headers=headers, data=payload)
+
+    return response.text
 
 
 def toFixed(numObj, digits=0):
@@ -456,6 +488,36 @@ def bot_message(message):
 
                 bot.send_message(message.chat.id, '🔱 Другое', reply_markup=markup)
 
+            elif message.text == '🌬️ Алиса':
+                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+
+                if state_dev(config.TORCH):
+                    state_t = 'Выкл'
+                else:
+                    state_t = 'Вкл'
+
+                item1 = types.KeyboardButton(f'🔦 Торшер: {state_t}')
+                back = types.KeyboardButton('◀ Назад')
+                markup.add(item1, back)
+
+                bot.send_message(message.chat.id, '🌬️ Алиса', reply_markup=markup)
+
+            elif message.text.__contains__('🔦 Торшер'):
+                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+
+                if state_dev(config.TORCH):
+                    run_scen(config.ON_TORCH)
+                    state_t = 'Вкл'
+                else:
+                    run_scen(config.OFF_TORCH)
+                    state_t = 'Выкл'
+
+                item1 = types.KeyboardButton(f'🔦 Торшер: {state_t}')
+                back = types.KeyboardButton('◀ Назад')
+                markup.add(item1, back)
+
+                bot.send_message(message.chat.id, item1.text, reply_markup=markup)
+
             elif message.text == '🛠️ Настройка напоминаний':
                 try:
                     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -597,9 +659,10 @@ def bot_message(message):
                 item1 = types.KeyboardButton('🎇 Рандомное число')
                 item2 = types.KeyboardButton('🔮 Узнаем погоду')
                 item3 = types.KeyboardButton('🍩 ITSM365')
-                item4 = types.KeyboardButton('🔱 Другое')
+                item4 = types.KeyboardButton('🌬️ Алиса')
+                item5 = types.KeyboardButton('🔱 Другое')
 
-                markup.add(item1, item2, item3, item4)
+                markup.add(item1, item2, item3, item4, item5)
 
                 bot.send_message(message.chat.id, '◀ Назад', reply_markup=markup)
 
