@@ -25,7 +25,7 @@ PG_PORT = '5432'
 
 
 #Токен для умного дома
-TOKEN_YA = 'AQAAAAAFLtOZAAe4dSA_K09P3EF7tus0hqA9paQ'
+TOKEN_YA = 'AQAAAAAFLtOZAAe4db-vapmss0__kWOD_XPm_7A'
 
 #Id сценариев для умного дома
 ON_TORCH = '06b1f07c-8398-43b7-a955-a6eae8e01ef9'   #включение торшера
