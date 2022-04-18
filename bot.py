@@ -497,6 +497,7 @@ def bot_message(message):
                     state_t = 'Вкл'
 
                 item1 = types.KeyboardButton(f'🔦 Торшер: {state_t}')
+                item2 = types.KeyboardButton(f'🔦 Беляшик: {state_t}')
                 back = types.KeyboardButton('◀ Назад')
                 markup.add(item1, back)
 
