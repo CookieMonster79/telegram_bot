@@ -497,9 +497,9 @@ def bot_message(message):
                     state_t = 'Вкл'
 
                 item1 = types.KeyboardButton(f'🔦 Торшер: {state_t}')
-                item2 = types.KeyboardButton(f'🔦 Беляшик: {state_t}')
+                item2 = types.KeyboardButton(f'🤖 Беляшик')
                 back = types.KeyboardButton('◀ Назад')
-                markup.add(item1, back)
+                markup.add(item1, item2, back)
 
                 bot.send_message(message.chat.id, '🌬️ Алиса', reply_markup=markup)
 
@@ -514,6 +514,7 @@ def bot_message(message):
                     state_t = 'Выкл'
 
                 item1 = types.KeyboardButton(f'🔦 Торшер: {state_t}')
+                item2 = types.KeyboardButton(f'🤖 Беляшик')
                 back = types.KeyboardButton('◀ Назад')
                 markup.add(item1, back)
 
@@ -664,7 +665,7 @@ def bot_message(message):
                 item5 = types.KeyboardButton('🔱 Другое')
 
                 #markup.add(item1, item2, item3, item4, item5)
-                markup.add(item1, item2, item4, item5)
+                markup.add([item1, item2], [item4, item5])
 
                 bot.send_message(message.chat.id, '◀ Назад', reply_markup=markup)
 
