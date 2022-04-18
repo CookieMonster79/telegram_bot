@@ -658,11 +658,12 @@ def bot_message(message):
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
                 item1 = types.KeyboardButton('🎇 Рандомное число')
                 item2 = types.KeyboardButton('🔮 Узнаем погоду')
-                item3 = types.KeyboardButton('🍩 ITSM365')
+                #item3 = types.KeyboardButton('🍩 ITSM365')
                 item4 = types.KeyboardButton('🌬️ Алиса')
                 item5 = types.KeyboardButton('🔱 Другое')
 
-                markup.add(item1, item2, item3, item4, item5)
+                #markup.add(item1, item2, item3, item4, item5)
+                markup.add(item1, item2, item4, item5)
 
                 bot.send_message(message.chat.id, '◀ Назад', reply_markup=markup)
 
