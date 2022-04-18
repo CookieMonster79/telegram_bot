@@ -72,7 +72,7 @@ def start_command(message):
     item5 = types.KeyboardButton('🔱 Другое')
 
     # markup.add(item1, item2, item3, item4, item5)
-    markup.add([item1, item2], [item4, item5])
+    markup.add(item1, item2, item4, item5)
 
     thread = Thread(target=run(message, markup))
     thread.start()
@@ -666,7 +666,7 @@ def bot_message(message):
                 item5 = types.KeyboardButton('🔱 Другое')
 
                 #markup.add(item1, item2, item3, item4, item5)
-                markup.add([item1, item2], [item4, item5])
+                markup.add(item1, item2, item4, item5)
 
                 bot.send_message(message.chat.id, '◀ Назад', reply_markup=markup)
 
