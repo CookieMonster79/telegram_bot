@@ -1,10 +1,12 @@
 import json
 import random
+import time
 from datetime import datetime
 
 import prettytable as pt
 import psycopg2
 import requests
+from multiprocessing.context import Process
 import schedule
 import telebot
 from telebot import types
@@ -13,22 +15,10 @@ from telebot.types import KeyboardButton
 import config
 
 bot = telebot.TeleBot(config.TOKEN)
+user_id = 240170832 #Данные ИД мой, нужно поудмать над тем чтобы изменить под message id
 
 # Список идентификаторов пользователей кому доступен бот
 list_user = ['moskva_max', 'Sa_Mosk']
-
-
-def run(message, markup):
-    schedule.every().day.at('13:00').do(send_message(message, markup))
-    schedule.every().every(4).seconds.do(send_message(message, markup))
-    # scheduler.add_job(bot.send_message, trigger='cron', hour=13, minute=30, replace_existing=True,
-    # args=[message.chat.id, approvedDate()])
-    while True:
-        schedule.run_pending()
-
-
-def send_message(message, markup):
-    bot.send_message(message.chat.id, 'Успешно запустили планировщик 😎', reply_markup=markup)
 
 
 def approvedDate():
@@ -59,6 +49,13 @@ def approvedDate():
     return text
 
 
+def send_message1():
+    bot.send_message(chat_id=user_id, text='Планировщик успешно работает. Всё нормально!')
+
+
+schedule.every().day.at('12:00').do(send_message1) #Тестовый ежедневный запуск отправки сообщения
+
+
 @bot.message_handler(commands=['start'])
 def start_command(message):
     """
@@ -76,8 +73,6 @@ def start_command(message):
     # markup.add(item1, item2, item3, item4, item5)
     markup.row(item1, item2)
     markup.row(item4, item5)
-
-    run(message, markup)
 
     bot.send_message(message.chat.id,
                      'Привет!.\n' +
@@ -124,9 +119,6 @@ def toFixed(numObj, digits=0):
     :return:
     """
     return f"{numObj:.{digits}f}"
-
-
-# scheduler = BlockingScheduler({'apscheduler.timezone': 'Europe/Moscow'})
 
 
 @bot.message_handler(content_types=['text'])
@@ -678,4 +670,20 @@ def bot_message(message):
         bot.send_message(message.chat.id, message.text)
 
 
-bot.polling(none_stop=True)
+class ScheduleMessage():
+    def try_send_schedule():
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
+
+    def start_process():
+        p1 = Process(target=ScheduleMessage.try_send_schedule, args=())
+        p1.start()
+
+#Запускается так потому что два потока, сам бот и планировщик
+if __name__ == '__main__':
+    ScheduleMessage.start_process()
+    try:
+        bot.polling(none_stop=True)
+    except:
+        pass
