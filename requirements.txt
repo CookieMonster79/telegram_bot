@@ -3,6 +3,5 @@ requests
 tabulate
 psycopg2
 telegram
-APScheduler
 schedule
 prettytable

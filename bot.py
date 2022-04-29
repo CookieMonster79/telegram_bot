@@ -1,13 +1,12 @@
 import json
 import random
 from datetime import datetime
-from threading import Thread
 
 import prettytable as pt
 import psycopg2
 import requests
+import schedule
 import telebot
-from apscheduler.schedulers.background import BlockingScheduler
 from telebot import types
 from telebot.types import KeyboardButton
 
@@ -20,13 +19,16 @@ list_user = ['moskva_max', 'Sa_Mosk']
 
 
 def run(message, markup):
-    if scheduler.state != 1:
-        scheduler.add_job(bot.send_message, trigger='cron', hour=13, minute=30, replace_existing=True,
-                          args=[message.chat.id, approvedDate()])
-        scheduler.start()
-        bot.send_message(message.chat.id, 'Успешно запустили планировщик 😎', reply_markup=markup)
-    else:
-        bot.send_message(message.chat.id, 'Планировщик уже запущен 😋', reply_markup=markup)
+    schedule.every().day.at('13:00').do(send_message(message, markup))
+    schedule.every().every(4).seconds.do(send_message(message, markup))
+    # scheduler.add_job(bot.send_message, trigger='cron', hour=13, minute=30, replace_existing=True,
+    # args=[message.chat.id, approvedDate()])
+    while True:
+        schedule.run_pending()
+
+
+def send_message(message, markup):
+    bot.send_message(message.chat.id, 'Успешно запустили планировщик 😎', reply_markup=markup)
 
 
 def approvedDate():
@@ -47,11 +49,11 @@ def approvedDate():
     rows = cur.fetchall()
     curDate = datetime.now().strftime("%d-%m")
     curYear = datetime.now().strftime("%Y")
-   # for row in rows:
-   #     if row[2] == curDate:
-       #     text = 'Сегодня ' + row[0] + ', ' + 'родился(-лась) ' + row[1] + ', лет ' + (int(curYear) - int(row[1]))
-      #  else:
-     #       text = 'Сегодня, нет ни у кого дня рождения!'
+    # for row in rows:
+    #     if row[2] == curDate:
+    #     text = 'Сегодня ' + row[0] + ', ' + 'родился(-лась) ' + row[1] + ', лет ' + (int(curYear) - int(row[1]))
+    #  else:
+    #       text = 'Сегодня, нет ни у кого дня рождения!'
 
     con.close()
     return text
@@ -67,24 +69,22 @@ def start_command(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton('🎇 Рандомное число')
     item2 = types.KeyboardButton('🔮 Узнаем погоду')
-    #item3 = types.KeyboardButton('🍩 ITSM365')
+    # item3 = types.KeyboardButton('🍩 ITSM365')
     item4 = types.KeyboardButton('🌬️ Алиса')
     item5 = types.KeyboardButton('🔱 Другое')
 
     # markup.add(item1, item2, item3, item4, item5)
-    #markup.add(item1, item2, item4, item5)
     markup.row(item1, item2)
     markup.row(item4, item5)
 
-    thread = Thread(target=run(message, markup))
-    thread.start()
+    run(message, markup)
 
     bot.send_message(message.chat.id,
                      'Привет!.\n' +
-                     'Умею всякое.\n' +
-                     'Сейчас например запустил планировщик, теперь каждый день в 10:00 будут приходить сообщения.\n',
+                     'Умею всякое.\n',
                      reply_markup=markup
                      )
+
 
 def state_dev(id_dev):
     '''Функция получает состояние устройства если возвращается True, то включено'''
@@ -126,7 +126,7 @@ def toFixed(numObj, digits=0):
     return f"{numObj:.{digits}f}"
 
 
-scheduler = BlockingScheduler({'apscheduler.timezone': 'Europe/Moscow'})
+# scheduler = BlockingScheduler({'apscheduler.timezone': 'Europe/Moscow'})
 
 
 @bot.message_handler(content_types=['text'])
@@ -544,8 +544,8 @@ def bot_message(message):
                     back = types.KeyboardButton('◀ Назад')
                     markup.add(item2, item3, back)
 
-                    thread = Thread(target=run(message, markup))
-                    thread.start()
+                    # thread = Thread(target=run(message, markup))
+                    # thread.start()
 
                 except:
                     bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
@@ -663,11 +663,11 @@ def bot_message(message):
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
                 item1 = types.KeyboardButton('🎇 Рандомное число')
                 item2 = types.KeyboardButton('🔮 Узнаем погоду')
-                #item3 = types.KeyboardButton('🍩 ITSM365')
+                # item3 = types.KeyboardButton('🍩 ITSM365')
                 item4 = types.KeyboardButton('🌬️ Алиса')
                 item5 = types.KeyboardButton('🔱 Другое')
 
-                #markup.add(item1, item2, item3, item4, item5)
+                # markup.add(item1, item2, item3, item4, item5)
                 markup.row(item1, item2)
                 markup.row(item4, item5)
 
