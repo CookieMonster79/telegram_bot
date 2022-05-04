@@ -93,8 +93,12 @@ def state_dev(id_dev):
     response = requests.request("GET", url, headers=headers, data=payload)
 
     a = json.loads(response.text.replace("'", '"'))
+    item = a.get('type')
 
-    return a.get('capabilities')[0].get('state').get('value')
+    if item == 'devices.types.light': # написано условие для люстры следует переписать на конкретную группу в будущем
+        return a.get('capabilities')[1].get('state').get('value')
+    else:
+        return a.get('capabilities')[0].get('state').get('value')
 
 
 def run_scen(id_scen):
@@ -486,34 +490,82 @@ def bot_message(message):
             elif message.text == '🌬️ Алиса':
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
 
-                if state_dev(config.TORCH):
-                    state_t = 'Выкл'
-                else:
-                    state_t = 'Вкл'
+                item1 = types.KeyboardButton(f'🔦 Торшер: 🌕/🌑')
+                item2 = types.KeyboardButton(f'🌆 Ночник: 🌕/🌑')
+                item3 = types.KeyboardButton(f'💡 Люстра: 🌕/🌑')
+                item4 = types.KeyboardButton(f'🤖 Беляшик: 🌕/🌑')
+                item5 = types.KeyboardButton(f'❓Очиститель')
+                item6 = types.KeyboardButton(f'❓Телевизор')
+                item7 = types.KeyboardButton(f'💫 Чиллим')
+                item8 = types.KeyboardButton(f'🗻 Я ушёл')
 
-                item1 = types.KeyboardButton(f'🔦 Торшер: {state_t}')
-                item2 = types.KeyboardButton(f'🤖 Беляшик')
                 back = types.KeyboardButton('◀ Назад')
-                markup.add(item1, item2, back)
+                markup.row(item1, item2, item3)
+                markup.row(item4, item5, item6)
+                markup.row(item7, item8)
+                markup.row(back)
 
                 bot.send_message(message.chat.id, '🌬️ Алиса', reply_markup=markup)
 
             elif message.text.__contains__('🔦 Торшер'):
-                markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-
                 if state_dev(config.TORCH):
                     run_scen(config.ON_TORCH)
-                    state_t = 'Вкл'
+                    state_t = '🔦 Торшер: 🌑'
                 else:
                     run_scen(config.OFF_TORCH)
-                    state_t = 'Выкл'
+                    state_t = '🔦 Торшер: 🌕'
 
-                item1 = types.KeyboardButton(f'🔦 Торшер: {state_t}')
-                item2 = types.KeyboardButton(f'🤖 Беляшик')
-                back = types.KeyboardButton('◀ Назад')
-                markup.add(item1, back)
+                bot.send_message(message.chat.id, state_t)
 
-                bot.send_message(message.chat.id, item1.text, reply_markup=markup)
+            elif message.text.__contains__('🤖 Беляшик'):
+                if state_dev(config.RVC):
+                    run_scen(config.ON_RVC)
+                    state_t = '🤖 Беляшик: 🌑'
+                else:
+                    run_scen(config.OFF_RVC)
+                    state_t = '🤖 Беляшик: 🌕'
+
+                bot.send_message(message.chat.id, state_t)
+
+            elif message.text.__contains__('🌆 Ночник'):
+                if state_dev(config.NIGHTLIGHT):
+                    run_scen(config.ON_NIGHTLIGHT)
+                    state_t = '🌆 Ночник: 🌑'
+                else:
+                    run_scen(config.OFF_NIGHTLIGHT)
+                    state_t = '🌆 Ночник: 🌕'
+
+                bot.send_message(message.chat.id, state_t)
+
+            elif message.text.__contains__('💡 Люстра'):
+                if state_dev(config.CHANDELIER):
+                    run_scen(config.ON_CHANDELIER)
+                    state_t = '💡 Люстра: 🌑'
+                else:
+                    run_scen(config.OFF_CHANDELIER)
+                    state_t = '💡 Люстра: 🌕'
+
+                bot.send_message(message.chat.id, state_t)
+
+            elif message.text.__contains__('💫 Чиллим'):
+                try:
+                    run_scen(config.СHILL)
+                    state = 'Ееее Чиллим!!! Выключаем люстру, включаем ночник!'
+
+                    bot.send_message(message.chat.id, state)
+
+                except:
+                    bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
+
+            elif message.text.__contains__('🗻 Я ухожу'):
+                try:
+                    run_scen(config.IM_OUT)
+                    state = 'Выключаем всё!'
+
+                    bot.send_message(message.chat.id, state)
+
+                except:
+                    bot.send_message(chat_id=message.chat.id, text='Что-то пошло не по плану :(')
 
             elif message.text == '🛠️ Настройка напоминаний':
                 try:
@@ -659,7 +711,6 @@ def bot_message(message):
                 item4 = types.KeyboardButton('🌬️ Алиса')
                 item5 = types.KeyboardButton('🔱 Другое')
 
-                # markup.add(item1, item2, item3, item4, item5)
                 markup.row(item1, item2)
                 markup.row(item4, item5)
 
