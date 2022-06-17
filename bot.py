@@ -53,7 +53,15 @@ def send_message1():
     bot.send_message(chat_id=user_id, text='Планировщик успешно работает. Всё нормально!')
 
 
+def send_no_sleep():
+    url = "https://telegram-bot-78.herokuapp.com/"
+    payload = {}
+    headers = {}
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+
 schedule.every().day.at('12:00').do(send_message1) #Тестовый ежедневный запуск отправки сообщения
+schedule.every(10).minutes.do(send_no_sleep)
 
 
 @bot.message_handler(commands=['start'])
