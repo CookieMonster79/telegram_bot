@@ -493,17 +493,19 @@ def bot_message(message):
                 item1 = types.KeyboardButton(f'🔦 Торшер: 🌕/🌑')
                 item2 = types.KeyboardButton(f'🌆 Ночник: 🌕/🌑')
                 item3 = types.KeyboardButton(f'💡 Люстра: 🌕/🌑')
-                item4 = types.KeyboardButton(f'🤖 Беляшик: 🌕/🌑')
-                item5 = types.KeyboardButton(f'❓Очиститель')
-                item6 = types.KeyboardButton(f'❓Телевизор')
-                item7 = types.KeyboardButton(f'💫 Чиллим')
-                item8 = types.KeyboardButton(f'🗻 Я ушёл')
+                item4 = types.KeyboardButton(f'☕ Кипач: 🌕/🌑')
+
+                item5 = types.KeyboardButton(f'🤖 Беляшик: 🌕/🌑')
+                item6 = types.KeyboardButton(f'❓Очиститель')
+                item7 = types.KeyboardButton(f'❓Телевизор')
+
+                item8 = types.KeyboardButton(f'💫 Чиллим')
+                item9 = types.KeyboardButton(f'🗻 Я ушёл')
 
                 back = types.KeyboardButton('◀ Назад')
-                markup.row(item1, item2, item3)
-                markup.row(item4, item5, item6)
-                markup.row(item7, item8)
-                markup.row(back)
+                markup.row(item1, item2, item3, item4)
+                markup.row(item5, item6, item7)
+                markup.row(item8, item9, back)
 
                 bot.send_message(message.chat.id, '🌬️ Алиса', reply_markup=markup)
 
@@ -514,16 +516,6 @@ def bot_message(message):
                 else:
                     run_scen(config.OFF_TORCH)
                     state_t = '🔦 Торшер: 🌕'
-
-                bot.send_message(message.chat.id, state_t)
-
-            elif message.text.__contains__('🤖 Беляшик'):
-                if state_dev(config.RVC):
-                    run_scen(config.ON_RVC)
-                    state_t = '🤖 Беляшик: 🌑'
-                else:
-                    run_scen(config.OFF_RVC)
-                    state_t = '🤖 Беляшик: 🌕'
 
                 bot.send_message(message.chat.id, state_t)
 
@@ -544,6 +536,28 @@ def bot_message(message):
                 else:
                     run_scen(config.OFF_CHANDELIER)
                     state_t = '💡 Люстра: 🌕'
+
+                bot.send_message(message.chat.id, state_t)
+
+            elif message.text.__contains__('☕ Кипач'):
+                #Дописать получение температуры и обновление её в последнем отправленном сообщении до 100 градусов,
+                #
+                if state_dev(config.RVC):
+                    run_scen(config.ON_HOT)
+                    state_t = '☕ Кипач: 🌑'
+                else:
+                    run_scen(config.OFF_HOT)
+                    state_t = '☕ Кипач: 🌕'
+
+                bot.send_message(message.chat.id, state_t)
+
+            elif message.text.__contains__('🤖 Беляшик'):
+                if state_dev(config.RVC):
+                    run_scen(config.ON_RVC)
+                    state_t = '🤖 Беляшик: 🌑'
+                else:
+                    run_scen(config.OFF_RVC)
+                    state_t = '🤖 Беляшик: 🌕'
 
                 bot.send_message(message.chat.id, state_t)
 
@@ -707,7 +721,7 @@ def bot_message(message):
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
                 item1 = types.KeyboardButton('🎇 Рандомное число')
                 item2 = types.KeyboardButton('🔮 Узнаем погоду')
-                # item3 = types.KeyboardButton('🍩 ITSM365')
+                item3 = types.KeyboardButton('🍩 ITSM365')
                 item4 = types.KeyboardButton('🌬️ Алиса')
                 item5 = types.KeyboardButton('🔱 Другое')
 
