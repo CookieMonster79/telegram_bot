@@ -807,7 +807,7 @@ class ScheduleMessage():
 
 #Запускается так потому что два потока, сам бот и планировщик
 if __name__ == '__main__':
-   # ScheduleMessage.start_process()
+    ScheduleMessage.start_process()
     try:
         bot.polling(none_stop=True)
     except:
