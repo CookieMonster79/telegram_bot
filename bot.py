@@ -15,10 +15,10 @@ from telebot.types import KeyboardButton
 import config
 
 bot = telebot.TeleBot(config.TOKEN)
-user_id = 240170832 #Данные ИД мой, нужно поудмать над тем чтобы изменить под message id
+user_id = config.USER_ID #Данные ИД мой, нужно поудмать над тем чтобы изменить под message id
 
 # Список идентификаторов пользователей кому доступен бот
-list_user = ['moskva_max', 'Sa_Mosk']
+list_user = config.LIST_USER
 
 
 def approvedDate():
@@ -49,8 +49,29 @@ def approvedDate():
     return text
 
 
+def get_PM_HUM_TEMP(id_dev):
+    '''Функция получает частицы в воздухе, температуру и влажность, а после возвращает '''
+    url = f'https://api.iot.yandex.net/v1.0/devices/{id_dev}'
+
+    payload = {}
+    headers = {
+        'Authorization': f'Bearer {config.TOKEN_YA}'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+    a = json.loads(response.text.replace("'", '"'))
+    result = [a.get('properties')[0].get('state').get('value'), a.get('properties')[1].get('state').get('value'),
+              a.get('properties')[2].get('state').get('value')]
+
+    return result
+
+
+
 def send_message1():
-    bot.send_message(chat_id=user_id, text='Планировщик успешно работает. Всё нормально!')
+    mass = get_PM_HUM_TEMP(config.PURIFIER)
+    text = 'Частицы (1 мкг/м³): '+str(mass[0])+'\nВлажность (%): '+str(mass[1])+'\nТемпература (C°): '+str(mass[2])
+    bot.send_message(chat_id=user_id, text=text)
+
 
 
 def send_no_sleep():
@@ -60,7 +81,7 @@ def send_no_sleep():
     response = requests.request("GET", url, headers=headers, data=payload)
 
 
-schedule.every().day.at('12:00').do(send_message1) #Тестовый ежедневный запуск отправки сообщения
+schedule.every().day.at('10:00').do(send_message1) #Тестовый ежедневный запуск отправки сообщения в 13:00
 schedule.every(10).minutes.do(send_no_sleep)
 
 
@@ -107,6 +128,22 @@ def state_dev(id_dev):
         return a.get('capabilities')[1].get('state').get('value')
     else:
         return a.get('capabilities')[0].get('state').get('value')
+
+
+        return a.get('properties')[0].get('state').get('value')
+
+def get_temperature(id_dev):
+    '''Функция получает градусы чайника и возвращает их'''
+    url = f'https://api.iot.yandex.net/v1.0/devices/{id_dev}'
+
+    payload = {}
+    headers = {
+        'Authorization': f'Bearer {config.TOKEN_YA}'
+    }
+
+    response = requests.request("GET", url, headers=headers, data=payload)
+
+    return json.loads(response.text.replace("'", '"')).get('properties')[0].get('state').get('value')
 
 
 def run_scen(id_scen):
@@ -501,10 +538,10 @@ def bot_message(message):
                 item1 = types.KeyboardButton(f'🔦 Торшер: 🌕/🌑')
                 item2 = types.KeyboardButton(f'🌆 Ночник: 🌕/🌑')
                 item3 = types.KeyboardButton(f'💡 Люстра: 🌕/🌑')
-                item4 = types.KeyboardButton(f'☕ Кипач: 🌕/🌑')
+                item4 = types.KeyboardButton(f'☕ Чайник: 🌕/🌑')
 
                 item5 = types.KeyboardButton(f'🤖 Беляшик: 🌕/🌑')
-                item6 = types.KeyboardButton(f'❓Очиститель')
+                item6 = types.KeyboardButton(f'🦠 Очиститель: 🌕')
                 item7 = types.KeyboardButton(f'❓Телевизор')
 
                 item8 = types.KeyboardButton(f'💫 Чиллим')
@@ -547,15 +584,16 @@ def bot_message(message):
 
                 bot.send_message(message.chat.id, state_t)
 
-            elif message.text.__contains__('☕ Кипач'):
+            elif message.text.__contains__('☕ Чайник'):
                 #Дописать получение температуры и обновление её в последнем отправленном сообщении до 100 градусов,
-                #
-                if state_dev(config.RVC):
+
+                current_temperature = get_temperature(config.HOT)
+                if state_dev(config.HOT):
                     run_scen(config.ON_HOT)
-                    state_t = '☕ Кипач: 🌑'
+                    state_t = '☕ Чайник: 🌑, 🌡️: ' + str(current_temperature)
                 else:
                     run_scen(config.OFF_HOT)
-                    state_t = '☕ Кипач: 🌕'
+                    state_t = '☕ Чайник: 🌕, 🌡️: ' + str(current_temperature)
 
                 bot.send_message(message.chat.id, state_t)
 
@@ -568,6 +606,20 @@ def bot_message(message):
                     state_t = '🤖 Беляшик: 🌕'
 
                 bot.send_message(message.chat.id, state_t)
+
+            elif message.text.__contains__('🦠 Очиститель'):
+                if state_dev(config.PURIFIER):
+                    state_t = '🦠 Состояние очистителя: 🌕'
+                else:
+                    state_t = '🦠 Состояние очистителя: 🌑'
+
+                mass = get_PM_HUM_TEMP(config.PURIFIER)
+                text = 'Частицы (1 мкг/м³): ' + str(mass[0]) + '\nВлажность (%): ' + str(
+                    mass[1]) + '\nТемпература (C°): ' + str(mass[2])
+
+                result = state_t + '\n' + text
+
+                bot.send_message(message.chat.id, result)
 
             elif message.text.__contains__('💫 Чиллим'):
                 try:
@@ -744,18 +796,18 @@ def bot_message(message):
 
 
 class ScheduleMessage():
-    def try_send_schedule():
+    def try_send_schedule(self):
         while True:
             schedule.run_pending()
             time.sleep(1)
 
-    def start_process():
+    def start_process(self):
         p1 = Process(target=ScheduleMessage.try_send_schedule, args=())
         p1.start()
 
 #Запускается так потому что два потока, сам бот и планировщик
 if __name__ == '__main__':
-    ScheduleMessage.start_process()
+   # ScheduleMessage.start_process()
     try:
         bot.polling(none_stop=True)
     except:
