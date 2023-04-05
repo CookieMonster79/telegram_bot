@@ -795,19 +795,20 @@ def bot_message(message):
         bot.send_message(message.chat.id, message.text)
 
 
-class ScheduleMessage():
-    def try_send_schedule(self):
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
+def try_send_schedule():
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 
-    def start_process(self):
-        p1 = Process(target=ScheduleMessage.try_send_schedule, args=())
-        p1.start()
+
+def start_process():
+    p1 = Process(args=())
+    p1.start()
+
 
 #Запускается так потому что два потока, сам бот и планировщик
 if __name__ == '__main__':
-    ScheduleMessage.start_process()
+    start_process()
     try:
         bot.polling(none_stop=True)
     except:
